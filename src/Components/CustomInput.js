@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { Font } from '../Assets/Fonts/Font'
 
 const CustomInput = forwardRef((props, ref) => {
   const {field} = useController({
@@ -74,6 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(20),
     backgroundColor: '#FFF',
     color: 'black',
+    fontFamily: Font.OpenSans600
   },
   Circle: {
     height: scale(10),
@@ -81,12 +83,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
   TextStyle: {
-    fontFamily: 'open sans',
-    fontSize: moderateScale(14),
-    fontStyle: 'normal',
-    fontWeight: '600',
+    fontSize: scale(13),
     color: 'lightgrey',
     marginVertical: verticalScale(4),
+    fontFamily: Font.OpenSans600
   },
 })
 export default CustomInput

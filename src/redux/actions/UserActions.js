@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA, ALLTATTO, SKINTONES, ALLCREATORS} from '../reducer/Holder'
+import {USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA, ALLTATTO, SKINTONES, ALLCREATORS, ALLUSERS, RANDOMPROFILE} from '../reducer/Holder'
 import {
   GoogleSignin,
   statusCodes,
@@ -62,6 +62,26 @@ export const getCreators = () => {
     const responseData = await response.json()
     if(responseData?.success?.status === 200){
       dispatch({type: ALLCREATORS, payload: responseData?.success?.data})
+    }
+          
+      } catch (error) {
+          console.log('error', error)
+      }
+  }
+}
+export const getUsers = () => {
+  return async (dispatch) => {
+   try {
+       let baseUrl = `${base_Url}users`
+
+
+    const response = await fetch(baseUrl,{
+      method: 'get',
+    })
+
+    const responseData = await response.json()
+    if(responseData?.success?.status === 200){
+      dispatch({type: ALLUSERS, payload: responseData?.success?.data})
     }
           
       } catch (error) {
@@ -159,7 +179,8 @@ export const editProfile = (data,profile_image,cover_image,setLoader,setCheck,na
     }
   }
 }
-export const creatorAddUser = async (data, setBtn1,setBtn2,setChooseColor) => {
+export const creatorAddUser = async (data, setBtn1,setBtn2,setChooseColor,ToastAndroid,setBtnLoader,setMsg) => {
+  setBtnLoader(true)
   const  userDetails =  await AsyncStorage.getItem('user_details')
   const cnvrtData = JSON.parse(userDetails)
   try {
@@ -177,14 +198,27 @@ export const creatorAddUser = async (data, setBtn1,setBtn2,setChooseColor) => {
     })
 
     const responseData = await response.json()
+    console.log('responseData', responseData)
+
+    if(responseData?.error?.email == "The email has already been taken."){
+      setMsg('The email has already been taken.')
+    }else if(responseData?.error?.name == "The name has already been taken."){
+      setMsg('The name has already been taken.')
+    }
+
     if(responseData?.success?.status === 200){
-    alert('first')
+      getUsers()
+      setBtnLoader(false)
     setBtn1(true),
     setBtn2(false),
     setChooseColor(false)
+    ToastAndroid.show('User Added', ToastAndroid.LONG)
+    }else{
+      setBtnLoader(false)
     }
   } catch (error) {
     console.log('error', error)
+    setBtnLoader(false)
   }
 }
 export const getSkinTone = async (code,setData) => {
@@ -207,5 +241,114 @@ export const getSkinTone = async (code,setData) => {
     }
   } catch (error) {
     console.log('error', error)
+  }
+}
+export const likedByID = async (id) => {
+  const  userDetails =  await AsyncStorage.getItem('user_details')
+  const cnvrtData = JSON.parse(userDetails)
+  try {
+    let baseUrl = `${base_Url}store-like/${id}/${cnvrtData.data.id}`
+  
+    const response = await fetch(baseUrl,{
+      method: 'post',
+    })
+
+    const responseData = await response.json()
+    console.log('responseData', responseData)
+    if(responseData?.success?.status === 200){
+      console.log('responseData',responseData?.success?.data)
+    }
+  } catch (error) {
+    console.log('likedByID error', error)
+  }
+}
+export const getCommentsByID = async (id,setData) => {
+  console.log('id', id)
+  try {
+    let baseUrl = `${base_Url}show-comment/${id}`
+  
+    const response = await fetch(baseUrl,{
+      method: 'get',
+    })
+
+    const responseData = await response.json()
+    if(responseData?.success?.status === 200){
+      setData(responseData?.success?.data)
+    }
+  } catch (error) {
+    console.log('commentsByID error', error)
+  }
+}
+export const send_Comments = async (data,id,reset) => {
+  console.log('data', data,id)
+    const  userDetails =  await AsyncStorage.getItem('user_details')
+    const cnvrtData = JSON.parse(userDetails)
+    try {
+    let baseUrl = `${base_Url}store-comment/${id}/${cnvrtData.data.id}`
+    let myData = new FormData()
+
+    myData.append('comment',data.comment)
+  
+    const response = await fetch(baseUrl,{
+      method: 'post',
+      body: myData
+    })
+
+    console.log('response', response)
+
+    const responseData = await response.json()
+
+    console.log('send_Comments responseData', responseData)
+    if(responseData?.success?.status === 200){
+      reset()
+    }else{
+      console.log('send_Comments else error')
+    }
+      
+    } catch (error) {
+      console.log('send_Comments error', error)
+  }
+}
+export const getMyTattos = async (setData) => {
+  const  userDetails =  await AsyncStorage.getItem('user_details')
+  const cnvrtData = JSON.parse(userDetails)
+  try {
+    let baseUrl = `${base_Url}show-user-tattoo/${cnvrtData.data.id}`
+  
+    const response = await fetch(baseUrl,{
+      method: 'get',
+    })
+
+    const responseData = await response.json()
+    console.log('responseData', responseData)
+    if(responseData?.success?.status === 200){
+      setData(responseData?.success?.data)
+      console.log('responseData',responseData?.success?.data)
+    }
+  } catch (error) {
+    console.log('commentsByID error', error)
+  }
+}
+
+export const getRandomProfile =  (id) => {
+  return async (dispatch) => {
+    const  userDetails =  await AsyncStorage.getItem('user_details')
+    const cnvrtData = JSON.parse(userDetails)
+    try {
+      let baseUrl = `${base_Url}user-id/${id}}`
+    
+      const response = await fetch(baseUrl,{
+        method: 'get',
+      })
+  
+      const responseData = await response.json()
+      console.log('responseData', responseData)
+      if(responseData?.success?.status === 200){
+        dispatch({type: RANDOMPROFILE, payload: responseData?.success})
+        console.log('responseData',responseData?.success)
+      }
+    } catch (error) {
+      console.log('commentsByID error', error)
+    }
   }
 }

@@ -25,12 +25,10 @@ import Validation from '../../Components/Validation'
 const EditProfile = ({navigation}) => {
     const dispatch = useDispatch()
   const userData = useSelector(state => state.user_details)
-
   const [saveImage, setSaveImage] = useState({})
   const [saveImage2, setSaveImage2] = useState({})
   const [loader, setLoader] = useState(false);
   const [check, setCheck] = useState(false)
-
 
   const {
     control,
@@ -202,7 +200,6 @@ const submitProfile = (data) => {
       name="email"
       rules={{
         required: 'Business Email is required',
-        value: Email_Regex,
         pattern: {
           value: Email_Regex,
           message: 'Enter a valid Email',

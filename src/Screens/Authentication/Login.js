@@ -94,7 +94,6 @@ const device = Platform.OS
           name="email"
           rules={{
             required: 'Email is required',
-            value: Email_Regex,
             pattern: {
               value: Email_Regex,
               message: 'Enter a valid Email',

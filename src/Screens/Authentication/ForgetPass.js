@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux'
 import { VerifyEmailBP } from '../../redux/actions/AuthActions'
 import Loader from '../../Components/Modal/LoaderModal'
 import IncorrectModal from '../../Components/Modal/IncorrectModal'
+import { Email_Regex } from '../../Utils/BaseUrl'
 
 const ForgetPass = ({navigation}) => {
   const dispatch = useDispatch()
@@ -51,6 +52,10 @@ const ForgetPass = ({navigation}) => {
           name="email"
           rules={{
             required: 'Email is required',
+            pattern: {
+              value: Email_Regex,
+              message: 'Enter a valid Email',
+            },
           }}
           control={control}
           style={styles.textInput}

@@ -4,8 +4,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {NavigationContainer} from '@react-navigation/native'
 import {scale, verticalScale} from 'react-native-size-matters'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import UserOthersTattoo from '../../Screens/User/UserOtherTattoo'
-import UserYourTattoo from '../../Screens/User/UserYourTattoo'
 import ChangePass from '../../Screens/Common/ChangePass'
 import Setting from '../../Screens/Common/Setting'
 import SettingOpt from '../../Screens/Common/SettingOpt'
@@ -121,12 +119,11 @@ function AllSetting() {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Setting'>
       <Stack.Screen name="editprofile" component={EditProfile} />
-      <Stack.Screen name="userothertattoo" component={UserOthersTattoo} />
-      <Stack.Screen name="useryourtattoo" component={UserYourTattoo} />
       <Stack.Screen name="changepass" component={ChangePass} />
       <Stack.Screen name="Setting" component={Setting} />
       <Stack.Screen name="settingopt" component={SettingOpt} />
       <Stack.Screen name="profile" component={Profile} />
+      <Stack.Screen name="RandomProfile" component={RandomProfile} />
     </Stack.Navigator>
   )
 }

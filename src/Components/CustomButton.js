@@ -1,8 +1,9 @@
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native'
+import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native'
 import React from 'react'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/AntDesign'
 import Icons from 'react-native-vector-icons/FontAwesome5'
+import { Font } from '../Assets/Fonts/Font'
 // import ICONS from 'react-native-vector-icons/FontAwesome5Brands'
 
 const CustomButton = ({
@@ -20,13 +21,19 @@ const CustomButton = ({
   Textalig,
   restyle,
   Iconstyle,
+  btnLoader
 }) => {
   return (
     <View style={[styles.ButtonContainer, stylz]}>
       <TouchableOpacity
         onPress={onPress}
         style={[styles.ButtonStyles, BGColor, restyle]}>
+          {
+            btnLoader == true ?
+            <ActivityIndicator size={scale(18)} color={'white'} />
+            :
         <Text style={[styles.ButtonText, Textalig]}>{text}</Text>
+          }
       </TouchableOpacity>
     </View>
   )
@@ -52,9 +59,8 @@ const styles = StyleSheet.create({
     color: 'black',
     textTransform: 'capitalize',
     letterSpacing: moderateScale(1),
-    fontSize: moderateScale(20),
-    fontWeight: '800',
-    fontFamily: 'open sans',
+    fontSize: scale(19),
+    fontFamily: Font.OpenSans700
     // textAlign: 'center',
     // paddingHorizontal: scale(5),
   },

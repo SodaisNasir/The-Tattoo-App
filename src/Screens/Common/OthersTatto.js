@@ -1,39 +1,32 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import React, {useCallback, useState} from 'react'
 import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
   Image,
-  ActivityIndicator,
-  Dimensions,
   TouchableOpacity,
-  ImageBackground,
-  ScrollView,
-  KeyboardAvoidingView,
   FlatList,
-  TextInput,
+  ScrollView,
+  Dimensions,
 } from 'react-native'
-import StaggeredList from '@mindinventory/react-native-stagger-view'
-import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import CustomInput from '../../Components/CustomInput'
-import {useForm} from 'react-hook-form'
+import {scale, verticalScale} from 'react-native-size-matters'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Entypo from 'react-native-vector-icons/Entypo'
+import { getAllTatto, getCommentsByID, getCreators, getMyTattos, getSkinTone, getSkinTones, likedByID, send_Comments } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
-import { useFocusEffect } from '@react-navigation/native'
-import { getAllTatto, getCommentsByID, getCreators, getRandomProfile, getSkinTone, getSkinTones, getUsers, likedByID, send_Comments } from '../../redux/actions/UserActions'
-import { base_Url, base_image_Url } from '../../Utils/BaseUrl'
-import Modal from 'react-native-modal'
-import SearchInput from '../../Components/SearchInput'
-import moment from 'moment';
+import { base_image_Url } from '../../Utils/BaseUrl'
 import CommentsInput from '../../Components/CommentsInput'
+import Modal from 'react-native-modal'
+import { useForm } from 'react-hook-form'
+import StaggeredList from '@mindinventory/react-native-stagger-view'
 import { Font } from '../../Assets/Fonts/Font'
+import moment from 'moment'
 
 const width = Dimensions.get('screen').width
 
-const Home = ({navigation}) => {
+const OthersTatto = () => {
   const dispatch = useDispatch()
   const alltatto = useSelector(state => state.alltatto)
   const skintones = useSelector(state => state.skintones)
@@ -48,11 +41,6 @@ const Home = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [commentsData, setCommentsData] = useState([]);
-  // const scrollViewRef = useRef()
-
-  // useEffect(() => {
-  //   scrollViewRef.current.scrollToEnd({animated: true})
-  // }, [])
 
   const {
     control,
@@ -60,16 +48,6 @@ const Home = ({navigation}) => {
     reset,
     formState: {errors, isValid},
   } = useForm({mode: 'all'})
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getAllTatto())
-      dispatch(getSkinTones())
-      dispatch(getCreators())
-      dispatch(getUsers())
-    },[isLike])
-  )
-
 
   const getChildrenStyle = () => {
     return {
@@ -108,31 +86,18 @@ const Home = ({navigation}) => {
     setData(item)
     setModalVisible(true)
   } 
-  const handlePress = (item) => {
-    getSkinTone(item,setSkinTone)
-    setChooseColor(false)
-  }
+
 const refrshView =  () => {
       dispatch(getAllTatto())
       dispatch(getSkinTones())
       dispatch(getCreators())
       setSkinTone([])
 }
-
 const goToProfile = () => {
-  dispatch(getRandomProfile(data.user_id))
   setModalVisible(false)
-  navigation.navigate('RandomProfile')
+  // navigation.navigate('RandomProfile')
 }
-const handleSearch = text2 => {
-  setSkinTone([])
-  const formattedQuery = text2?.toLowerCase();
-  const filteredData = alltatto?.filter(item => {
-    return item?.name?.toLowerCase().includes(formattedQuery);
-  });
-  setFilteredData(filteredData);
-  setSearchQuery(text2);
-};
+
 const likePost = (id) => {
   likedByID(id)
   setIsLike(!isLike)
@@ -147,68 +112,10 @@ const sendComment = (item) => {
     getCommentsByID(data.id,setCommentsData)
   }, 1000);
 }
+
   return (
-    <SafeAreaView style={styles.MainContainer}>
-    <View style={{
-      // height: 100,
-      width: '100%',
-      position: 'absolute',
-      zIndex: 999,
-    }}>
-      {/* <TextInput
-         name="search"
-       onChangeText={text => handleSearch(text)}
-       value={searchQuery}
-       returnKeyType='search'
-       style={{
-        position: 'absolute',
-        top: scale(45),
-        width: '85%',
-        zIndex: 9,
-        height: scale(40),
-       }}
-      /> */}
-        <SearchInput
-         onChangeText={text => handleSearch(text)}
-         value={searchQuery}
-         returnKeyType='search'
-      keyboardType={'default'}
-      Hello={{
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 0,
-      }}
-      restyle={{
-        position: 'absolute',
-        top: scale(45),
-        width: '85%',
-        zIndex: 9,
-        height: scale(40),
-      }}
-    />
-    <TouchableOpacity
-      onPress={() => setChooseColor(true)}
-      style={{
-        height: scale(35),
-        width: scale(35),
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        top: scale(47),
-        zIndex: 100,
-        right: scale(35),
-      }}>
-      <Image
-        style={{
-          height: scale(25),
-          width: scale(25),
-        }}
-        source={require('../../Assets/Images/slider.png')}
-      />
-    </TouchableOpacity>
-    </View>
-  
-    <StaggeredList
+    <SafeAreaView style={{flex:1}}>
+      <StaggeredList
       data={filteredData.length > 0 && skinTone.length < 1? filteredData : skinTone.length > 0 ? skinTone : alltatto}
       animationType={'FADE_IN_FAST'}
       contentContainerStyle={{
@@ -219,97 +126,8 @@ const sendComment = (item) => {
       renderItem={({item}) => renderChildren(item)}
       onRefresh={() => refrshView()}
     />
-<View style={{height: verticalScale(50)}} />
-    <Modal
-      onBackdropPress={() => setChooseColor(false)}
-      onClose={() => setChooseColor(false)}
-      animationType="slide"
-      style={{margin:0}}
-      transparent={true}
-      visible={chooseColor}>
-      <View style={styles.centeredView2}>
-        <TouchableOpacity
-          onPress={() => setChooseColor(!true)}
-          style={{
-            height: scale(38),
-            width: scale(38),
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            top: scale(47),
-            zIndex: 100,
-            right: scale(35),
-            backgroundColor: 'rgba(255, 255, 255, 0.3);',
-            borderRadius: 100,
-          }}>
-          <Image
-            style={{
-              height: scale(25),
-              width: scale(25),
-            }}
-            source={require('../../Assets/Images/slider.png')}
-          />
-        </TouchableOpacity>
 
-        <View
-          style={{
-            // height: scale(200),
-            width: '75%',
-            position: 'absolute',
-            top: scale(90),
-            borderRadius: 10,
-            overflow: 'hidden',
-          }}>
-            <FlatList 
-            data={skintones}
-            renderItem={({item}) => {
-              return(
-                <TouchableOpacity
-                onPress={() => handlePress(item.code)}
-                key={item.id}
-                style={{
-                  height:verticalScale(30),
-                  backgroundColor: item.code,
-                  // borderTopLeftRadius: 14,
-                  // borderTopRightRadius: 14,
-                }} />
-              )
-            }}
-            />
-          {/* <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#44362E',
-              borderTopLeftRadius: 14,
-              borderTopRightRadius: 14,
-            }}></TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#725A4D',
-            }}></TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#9F7E6B',
-            }}></TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#B49F96',
-            }}></TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              backgroundColor: '#D6BA9A',
-              borderBottomLeftRadius: 14,
-              borderBottomRightRadius: 14,
-            }}></TouchableOpacity> */}
-        </View>
-      </View>
-    </Modal>
-
-    <Modal
+<Modal
       onBackdropPress={() => (setModalVisible(false),setIsLike(false))}
       animationType="slide"
       // transparent={true}
@@ -611,29 +429,29 @@ const sendComment = (item) => {
   </View>
       </View>
     </Modal>
-  </SafeAreaView>
+    </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
-    MainContainer: {
-      flex: 1,
-      backgroundColor: 'black',
+  MainContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  centeredView2: {
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    backgroundColor: 'rgba(6, 5, 24, 0.8)',
+    shadowOffset: {
+      width: 0,
+      height: 1,
     },
-    centeredView2: {
-      height: '100%',
-      width: '100%',
-      alignItems: 'center',
-      shadowColor: '#000',
-      backgroundColor: 'rgba(6, 5, 24, 0.8)',
-      shadowOffset: {
-        width: 0,
-        height: 1,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-      paddingHorizontal: scale(5),
-    },
-  })
-export default Home
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    paddingHorizontal: scale(5),
+  },
+})
+export default OthersTatto

@@ -3,6 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native'
 import {launchImageLibrary} from 'react-native-image-picker'
 import {scale, verticalScale} from 'react-native-size-matters'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { Font } from '../../Assets/Fonts/Font'
 
 const Gallery = ({saveImage6, setSaveImage6}) => {
 
@@ -44,7 +45,7 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
 
   const emptyImage = () => {
     filessave()
-    // setproimg(false)
+    setproimg(false)
   }
 
   return (
@@ -57,9 +58,9 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
               alignItems: 'center',
             }}>
             <View style={styles.IconCon}>
-              <AntDesign name="upload" size={28} color={'white'} />
+              <AntDesign name="upload" size={scale(20)} color={'white'} />
             </View>
-            <Text style={{color: '#000000', fontWeight: '700', fontSize: 12}}>
+            <Text style={{color: '#000000',fontFamily: Font.OpenSans400, fontSize: scale(10)}}>
               Tap to upload
             </Text>
           </View>
@@ -75,7 +76,7 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
       <View style={styles.FourCon}>
         <View style={styles.FourBoxes}>
           {proimg ? (
-            <Text>no: 2</Text>
+            <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 2</Text>
           ) : (
             <>
               <Image
@@ -89,7 +90,7 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
         </View>
         <View style={styles.FourBoxes}>
           {proimg ? (
-            <Text>no: 3</Text>
+            <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 3</Text>
           ) : (
             <Image
               style={styles.UserImage}
@@ -100,7 +101,7 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
         </View>
         <View style={styles.FourBoxes}>
           {proimg ? (
-            <Text>no: 4</Text>
+            <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 4</Text>
           ) : (
             <Image
               style={styles.UserImage}
@@ -111,7 +112,7 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
         </View>
         <View style={styles.FourBoxes}>
           {proimg ? (
-            <Text>no: 5</Text>
+            <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 5</Text>
           ) : (
             <Image
               style={styles.UserImage}

@@ -1,5 +1,5 @@
 import StaggeredList from '@mindinventory/react-native-stagger-view'
-import React, {useState} from 'react'
+import React, {useCallback, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {
   StyleSheet,
@@ -11,8 +11,12 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native'
-import {moderateScale, scale} from 'react-native-size-matters'
+import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import BackArrow from '../../Components/BackArrow'
+import { useSelector } from 'react-redux'
+import { base_image_Url } from '../../Utils/BaseUrl'
+import { useFocusEffect } from '@react-navigation/native'
+import { Font } from '../../Assets/Fonts/Font'
 
 const width = Dimensions.get('screen').width
 
@@ -26,26 +30,32 @@ const images = [
 ]
 
 const RandomProfile = ({navigation}) => {
-  const [data, setData] = useState(images)
-  const [modalVisible, setModalVisible] = useState(false)
-  const [modalVisible2, setModalVisible2] = useState(false)
-  const [isLike, setIsLike] = useState(false)
-  const [chooseColor, setChooseColor] = useState(false)
+  const profileData = useSelector((state) => state.randomprofile)
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
+  //   }, []),
+  // );
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isValid},
+  } = useForm({mode: 'all'})
 
   const getChildrenStyle = () => {
     return {
       width: (width - 18) / 2,
-      height: Number(Math.random() * 20 + 12) * 10,
+      height: Number(Math.random() * 20 + 10) * 10,
       borderRadius: 18,
       backgroundColor: 'grey',
       margin: 2,
     }
   }
-
   const renderChildren = (item) => {
+    const cnvrtData = JSON.parse(item.image)
     return (
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+        // onPress={() => onSubmit(item,cnvrtData)}
         activeOpacity={0.7}>
         <View style={getChildrenStyle()} key={item.id}>
           <Image
@@ -54,7 +64,7 @@ const RandomProfile = ({navigation}) => {
               borderRadius: 18,
             }}
             source={{
-              uri: 'https://menshaircuts.com/wp-content/uploads/2019/01/tattoos-for-men-tribal-chest-sleeve-683x1024.jpg',
+              uri: `${base_image_Url}` + cnvrtData[0],
             }}
             resizeMode={'contain'}
           />
@@ -63,11 +73,7 @@ const RandomProfile = ({navigation}) => {
     )
   }
 
-  const {
-    control,
-    handleSubmit,
-    formState: {errors, isValid},
-  } = useForm({mode: 'all'})
+ 
 
   return (
     <SafeAreaView style={styles.MainContainer}>
@@ -82,25 +88,42 @@ const RandomProfile = ({navigation}) => {
               zIndex: 10,
             }}
           />
+           <Image 
+          resizeMode='cover'
+          style={{
+            height: '100%',
+            width:'100%'
+          }}
+          source={{uri : `${base_image_Url}` + profileData?.data?.cover_image}}
+          />
         </View>
-        <View style={styles.ImgCon}></View>
+        <View style={styles.ImgCon}>
+          <Image 
+          resizeMode='contain'
+          style={{
+            height: '100%',
+            width:'100%'
+          }}
+          source={{uri : `${base_image_Url}` + profileData?.data?.profile_image}}
+          />
+        </View>
 
         <View style={styles.NameCon}>
-          <Text style={styles.NameText}>Graffiti Women</Text>
+          <Text style={styles.NameText}>{profileData?.data.name}</Text>
 
           <View style={styles.TwoBox}>
             <View style={styles.Box1}>
-              <Text style={styles.BoxexNum}>30</Text>
+              <Text style={styles.BoxexNum}>{profileData?.total_tattoo}</Text>
               <Text style={styles.BoxesText}>Tattoos</Text>
             </View>
             <View style={[styles.Box1, {marginLeft: scale(5)}]}>
-              <Text style={styles.BoxexNum}>30</Text>
+              <Text style={styles.BoxexNum}>{profileData?.total_like}</Text>
               <Text style={styles.BoxesText1}>Thumbs Ups</Text>
             </View>
           </View>
 
           <StaggeredList
-            data={data}
+            data={profileData?.tattoo}
             animationType={'FADE_IN_FAST'}
             contentContainerStyle={{
               paddingVertical: 10,
@@ -111,6 +134,7 @@ const RandomProfile = ({navigation}) => {
           />
         </View>
       </ScrollView>
+      <View  style={{height: verticalScale(20)}}/>
     </SafeAreaView>
   )
 }
@@ -132,6 +156,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(110),
     position: 'relative',
     bottom: scale(65),
+    overflow:'hidden'
   },
   NameCon: {
     flex: 1,
@@ -139,12 +164,11 @@ const styles = StyleSheet.create({
     bottom: scale(50),
   },
   NameText: {
-    fontSize: moderateScale(25),
+    fontSize: scale(25),
     textAlign: 'center',
-    fontStyle: 'normal',
-    fontWeight: '900',
     color: 'white',
     letterSpacing: 0.7,
+    fontFamily: Font.OpenSans700
   },
   TwoBox: {
     // height: scale(90),
@@ -164,21 +188,22 @@ const styles = StyleSheet.create({
   },
   BoxesText: {
     color: '#05BC03',
-    fontSize: moderateScale(17),
-    fontStyle: 'normal',
-    fontWeight: '900',
+    fontSize: scale(15),
+    fontFamily: Font.Mulish700
   },
   BoxesText1: {
     color: '#05BC03',
-    fontSize: moderateScale(15),
-    fontStyle: 'normal',
-    fontWeight: '900',
+    fontSize: scale(15),
+    fontFamily: Font.Mulish700,
+    
   },
   BoxexNum: {
     color: '#05BC03',
-    fontSize: moderateScale(27),
-    fontStyle: 'normal',
-    fontWeight: '900',
+    fontSize: scale(27),
+   fontFamily: Font.Mulish700,
+   textShadowColor: 'rgb(0, 0, 0)',
+    textShadowOffset: {width: 0.5, height: 0.5},
+    textShadowRadius: scale(1),
   },
 })
 export default RandomProfile

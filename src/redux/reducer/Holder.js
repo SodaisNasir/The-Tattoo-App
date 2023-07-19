@@ -6,6 +6,8 @@ export const SOCIAL_DATA = 'SOCIAL_DATA'
 export const ALLTATTO = 'ALLTATTO'
 export const SKINTONES = 'SKINTONES'
 export const ALLCREATORS = 'ALLCREATORS'
+export const ALLUSERS = 'ALLUSERS'
+export const RANDOMPROFILE = 'RANDOMPROFILE'
 
 const initial_state = {
   user_details: null,
@@ -16,6 +18,8 @@ const initial_state = {
   alltatto: [],
   skintones: [],
   allcreators: [],
+  allusers: [],
+  randomprofile: null,
 }
 
 const holderReducer = (state = initial_state, action) => {
@@ -56,6 +60,16 @@ const holderReducer = (state = initial_state, action) => {
         return {
           ...state,
           allcreators: action.payload,
+        }
+      case ALLUSERS:
+        return {
+          ...state,
+          allusers: action.payload,
+        }
+      case RANDOMPROFILE:
+        return {
+          ...state,
+          randomprofile: action.payload,
         }
     default: {
       return state

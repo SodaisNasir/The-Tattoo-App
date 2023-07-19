@@ -1,6 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native'
 import React from 'react'
 import {scale, verticalScale, moderateScale} from 'react-native-size-matters'
+import { Font } from '../Assets/Fonts/Font'
 
 const Validation = (props) => {
   return (
@@ -19,5 +20,6 @@ const styles = StyleSheet.create({
     // fontFamily: Font.Lato700,
     // marginBottom: scale(10),
     marginHorizontal: scale(8),
+    fontFamily: Font.OpenSans600
   },
 })

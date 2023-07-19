@@ -1,6 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import React, {useState} from 'react'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
+import { Font } from '../Assets/Fonts/Font'
 
 const Top2navigator = (props, navigation) => {
   const [btn1, setBtn1] = useState(true)
@@ -44,14 +45,14 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   Text1: {
-    fontSize: moderateScale(10),
-    fontWeight: '700',
+    fontSize: scale(10),
     textTransform: 'uppercase',
     letterSpacing: moderateScale(1),
+    fontFamily: Font.Mulish700
   },
   Text2: {
-    fontSize: moderateScale(10),
-    fontWeight: '700',
+    fontSize: scale(10),
+    fontFamily: Font.Mulish700,
     textTransform: 'uppercase',
     letterSpacing: moderateScale(1),
   },

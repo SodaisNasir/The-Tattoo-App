@@ -14,12 +14,12 @@ import {moderateScale, scale} from 'react-native-size-matters'
 import BackArrow from '../../Components/BackArrow'
 import CustomButton from '../../Components/CustomButton'
 import Top2navigator from '../../Components/Top2bar'
-import StaggeredList from '@mindinventory/react-native-stagger-view'
-import CreatorYourTattoo from '../Creators/CreatorYourTattoo'
-import CreatorOthersTattoo from '../Creators/CreatorOthersTattoo'
 import { useFocusEffect } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import { base_image_Url } from '../../Utils/BaseUrl'
+import YourTatto from './YourTatto'
+import OthersTatto from './OthersTatto'
+import { Font } from '../../Assets/Fonts/Font'
 
 const Profile = ({navigation}) => {
     const [btn1, setBtn1] = useState(true)
@@ -136,8 +136,8 @@ const Profile = ({navigation}) => {
           />
         </View>
 
-        {data && <CreatorYourTattoo />}
-        {dataTwo && <CreatorOthersTattoo />}
+        {data && <YourTatto />}
+        {dataTwo && <OthersTatto />}
       </View>
     </ScrollView>
   </SafeAreaView>
@@ -168,12 +168,11 @@ const styles = StyleSheet.create({
       bottom: scale(50),
     },
     NameText: {
-      fontSize: moderateScale(25),
+      fontSize: scale(25),
       textAlign: 'center',
-      fontStyle: 'normal',
-      fontWeight: '900',
       color: 'white',
       letterSpacing: 0.7,
+      fontFamily: Font.OpenSans700
     },
     TwoBox: {
       // height: scale(90),
@@ -193,21 +192,18 @@ const styles = StyleSheet.create({
     },
     BoxesText: {
       color: '#05BC03',
-      fontSize: moderateScale(17),
-      fontStyle: 'normal',
-      fontWeight: '900',
+      fontSize: scale(14),
+   fontFamily: Font.OpenSans700
     },
     BoxesText1: {
       color: '#05BC03',
-      fontSize: moderateScale(15),
-      fontStyle: 'normal',
-      fontWeight: '900',
+      fontSize: scale(12),
+   fontFamily: Font.OpenSans700
     },
     BoxexNum: {
       color: '#05BC03',
-      fontSize: moderateScale(27),
-      fontStyle: 'normal',
-      fontWeight: '900',
+      fontSize: scale(27),
+      fontFamily: Font.OpenSans700
     },
   })
 export default Profile

@@ -182,7 +182,6 @@ const SignUp = ({navigation,route}) => {
         name="email"
         rules={{
           required: 'Business Email is required',
-          value: Email_Regex,
           pattern: {
             value: Email_Regex,
             message: 'Enter a valid Email',
@@ -234,7 +233,6 @@ InputUText="Email"
 name="email"
 rules={{
   required: 'Email is required',
-  value: Email_Regex,
   pattern: {
     value: Email_Regex,
     message: 'Enter a valid Email',

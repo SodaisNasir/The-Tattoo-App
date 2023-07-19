@@ -5,13 +5,14 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import { useFocusEffect } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import Home from './Home'
+import { Font } from '../../Assets/Fonts/Font'
 
 
 const Setting = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      navigation.getParent()?.setOptions({tabBarStyle: {
+      navigation?.getParent()?.setOptions({tabBarStyle: {
         // borderTopRightRadius: 30,
         // borderTopLeftRadius: 30,
         height: verticalScale(55),
@@ -74,27 +75,26 @@ const styles = StyleSheet.create({
     SideOne: {
       flex: 1,
       alignItems: 'center',
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       // justifyContent: 'flex-end',
       paddingHorizontal: scale(20),
     },
     SideTwo: {
       flex: 1,
       alignItems: 'center',
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       // justifyContent: 'flex-end',
       paddingHorizontal: scale(20),
     },
     Texts: {
-      fontFamily: 'sans open',
-      fontSize: 16,
+
+      fontSize: scale(17),
       textTransform: 'uppercase',
       color: '#05BC03',
-      fontWeight: '900',
-      fontStyle: 'normal',
       marginRight: scale(15),
       letterSpacing: 0.7,
-      paddingHorizontal: scale(20),
+      // paddingHorizontal: scale(20),
+      fontFamily: Font.OpenSans700
     },
     BackBlur: {
       width: '100%',

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  ToastAndroid
 } from 'react-native'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -17,19 +18,23 @@ import CustomButton from '../../Components/CustomButton'
 import CustomInput from '../../Components/CustomInput'
 import {useForm} from 'react-hook-form'
 import Gallery from '../../Components/Pickers/Gallery'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Email_Regex } from '../../Utils/BaseUrl'
 import Validation from '../../Components/Validation'
 import Modal from 'react-native-modal'
 import {SelectList} from 'react-native-dropdown-select-list';
-import { creatorAddUser, submitTattoEntry } from '../../redux/actions/UserActions'
+import { creatorAddUser, getUsers, submitTattoEntry } from '../../redux/actions/UserActions'
 import Loader from '../../Components/Modal/LoaderModal'
 import TickModal from '../../Components/Modal/TickModal'
+import { Font } from '../../Assets/Fonts/Font'
 
 const AddTatto = ({navigation}) => {
+  const dispatch = useDispatch()
+
     const userData = useSelector(state => state.user_details)
     const skintones = useSelector(state => state.skintones)
     const allcreators = useSelector(state => state.allcreators)
+    const allusers = useSelector(state => state.allusers)
     const [saveImage6, setSaveImage6] = useState([])
     const [btn1, setBtn1] = useState(true)
     const [btn2, setBtn2] = useState(false)
@@ -37,13 +42,16 @@ const AddTatto = ({navigation}) => {
     const [type, setType] = useState();
     const [selectCreator, setSelectCreator] = useState();
     const [loader, setLoader] = useState(false);
+    const [btnLoader, setBtnLoader] = useState(false);
     const [check, setCheck] = useState(false)
+    const [msg, setMsg] = useState('')
 
 
     const newData = skintones.map((item) => {
         return {label: item.id, value: item.code}
       })
-    const creatos = allcreators.map((item) => {
+      const shooData = userData.data.role_id == 2 ? allusers :  allcreators
+    const creatos = shooData.map((item) => {
         return {label: item.id, value: item.name}
       })
 
@@ -66,8 +74,12 @@ const AddTatto = ({navigation}) => {
         data,
         setBtn1,
       setBtn2,
-      setChooseColor)
-   
+      setChooseColor,
+      ToastAndroid,
+      setBtnLoader,
+      setMsg
+      )
+      dispatch(getUsers())
     }
     const onSubmit = () => {
         submitTattoEntry(saveImage6,selectCreator,type,setLoader,setCheck,navigation)
@@ -90,7 +102,7 @@ const AddTatto = ({navigation}) => {
         <Gallery   {...{setSaveImage6,saveImage6}}/>
 
         <View style={styles.DropdownBox}>
-            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3}}>Skin Tone</Text>
+            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>Skin Tone</Text>
             <SelectList
               placeholder="Select tone"
               arrowicon={
@@ -139,7 +151,7 @@ const AddTatto = ({navigation}) => {
         /> */}
   
           <View style={[styles.DropdownBox,{marginTop:scale(15)}]}>
-            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3}}>{userData.data.role_id == 1? 'Tag creator' :'Tag user'}</Text>
+            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>{userData.data.role_id == 1? 'Tag creator' :'Tag user'}</Text>
             <SelectList
              placeholder={userData.data.role_id == 1? 'Tag creator' :'Tag user'}
               arrowicon={
@@ -161,7 +173,7 @@ const AddTatto = ({navigation}) => {
               boxStyles={styles.boxStyles}
               dropdownTextStyles={styles.dropdownTextStyles}
               inputStyles={styles.inputStyles}
-              search={false}
+              search={true}
               setSelected={val => setSelectCreator(val)}
               data={creatos}
               save="key"
@@ -179,6 +191,7 @@ const AddTatto = ({navigation}) => {
             </View>           
             <CustomButton
             onPress={() => setChooseColor(true)}
+            
             text={'add user'}
               // stylz={{
               //   marginTop: scale(40),
@@ -232,13 +245,21 @@ const AddTatto = ({navigation}) => {
                 style={{
                   color: 'white',
                   textAlign: 'center',
-                  fontFamily: 'sans open',
-                  fontWeight: '700',
+                 fontFamily: Font.OpenSans600,
                   fontSize: 16,
+                  marginBottom:scale(15)
                 }}>
                     {userData.data.role_id == 1? 'Add New Creator' :'Add New User'}
               </Text>
-
+              {
+                msg ?
+                <Text  style={{
+                  color: 'red',
+                 fontFamily: Font.OpenSans600,
+                  fontSize: scale(14),
+                }}>{msg}</Text>
+               : null 
+              }
               <CustomInput
                 InputUText={'Full Name'}
                 name="f_name"
@@ -251,7 +272,7 @@ const AddTatto = ({navigation}) => {
                 keyboardType={'default'}
                 Hello={{
                   height: scale(75),
-                  marginTop: scale(40),
+                  marginTop: scale(5),
                 }}
                 restyle={{
                   height: scale(44),
@@ -259,11 +280,10 @@ const AddTatto = ({navigation}) => {
               />
                  {errors.f_name && <Validation title={errors.f_name.message} />}
               <CustomInput
-                InputUText={'Email'}
                 name="email"
+                InputUText={'Email'}
                 rules={{
                     required: 'Email is required',
-                    value: Email_Regex,
                     pattern: {
                       value: Email_Regex,
                       message: 'Enter a valid Email',
@@ -286,6 +306,7 @@ const AddTatto = ({navigation}) => {
                   fontSize: 18,
                 }}
                 text={userData.data.role_id == 1? 'Add creator' :'Add user'}
+                btnLoader={btnLoader}
               />
             </View>
           </View>
@@ -317,11 +338,10 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       position: 'relative',
       bottom: scale(25),
-      fontFamily: 'sans open',
       fontSize: moderateScale(15),
-      fontWeight: '700',
       fontStyle: 'normal',
       letterSpacing: 0.4,
+      fontFamily: Font.OpenSans600
     },
     SelectBox: {
       height: scale(110),
@@ -341,9 +361,8 @@ const styles = StyleSheet.create({
     SelectBoxText: {
       color: 'white',
       textTransform: 'capitalize',
-      fontFamily: 'sans open',
-      fontSize: moderateScale(13),
-      fontWeight: '500',
+      fontFamily: Font.OpenSans600,
+      fontSize: scale(10),
       fontStyle: 'normal',
       letterSpacing: 0.4,
       paddingHorizontal: scale(5),
@@ -381,10 +400,12 @@ const styles = StyleSheet.create({
       inputStyles: {
         color: 'black',
         fontSize: scale(13),
+        fontFamily: Font.OpenSans400
         // fontFamily: Font.Gilroy500,
       },
       dropdownTextStyles: {
         color: 'black',
+        fontFamily: Font.OpenSans400
       },
       dropdownItemStyles: {
         backgroundColor: 'white',

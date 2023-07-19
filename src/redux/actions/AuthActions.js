@@ -129,7 +129,7 @@ export const VerifyEmailBR =  (data,role_id,navigation,type,profileImage,coverIm
     try {
       let baseUrl = `${base_Url}verify-before-register`
       let myData = new FormData()
-  
+  console.log('data', data)
       myData.append('email',data.email)
       myData.append('name',data.fname ? data.fname : data.c_name)
   
