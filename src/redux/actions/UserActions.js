@@ -100,7 +100,7 @@ export const submitTattoEntry = async (selectedImages,tag,skin,setLoader,setChec
        myData.append('tag',tag)
        myData.append('skin_tone',skin)
        selectedImages.forEach((image, index) => {
-        myData.append(`image[${index + 1}]`, {
+        index < 5 && myData.append(`image[${index + 1}]`, {
           uri: image.uri,
           type: image.type,
           name: image.name,
@@ -329,11 +329,8 @@ export const getMyTattos = async (setData) => {
     console.log('commentsByID error', error)
   }
 }
-
-export const getRandomProfile =  (id) => {
-  return async (dispatch) => {
-    const  userDetails =  await AsyncStorage.getItem('user_details')
-    const cnvrtData = JSON.parse(userDetails)
+export const getRandomProfile = async (id,setData,setIsLoading) => {
+  setIsLoading(true)
     try {
       let baseUrl = `${base_Url}user-id/${id}}`
     
@@ -342,13 +339,76 @@ export const getRandomProfile =  (id) => {
       })
   
       const responseData = await response.json()
-      console.log('responseData', responseData)
+      // console.log('responseData', responseData)
       if(responseData?.success?.status === 200){
-        dispatch({type: RANDOMPROFILE, payload: responseData?.success})
-        console.log('responseData',responseData?.success)
+        setData(responseData?.success)
+        setIsLoading(false)
+        // dispatch({type: RANDOMPROFILE, payload: responseData?.success})
+        // console.log('responseData',responseData?.success)
+      }else{
+        setIsLoading(false)
       }
     } catch (error) {
+      setIsLoading(false)
       console.log('commentsByID error', error)
     }
+  
+}
+export const editNotification =   (userData) => {
+return async (dispatch) => {
+  try {
+    let base_url = `${base_Url}toggle/${userData.data.id}`;
+    const response = await fetch(base_url, {
+      method: 'post',
+    });
+    
+    const responseData = await response.json();
+    
+    if (responseData.success.status === 200) {
+      const user = await AsyncStorage.getItem('user_details');
+      let userData = JSON.parse(user);
+      userData.data.notification_status = responseData.success.data
+      await AsyncStorage.setItem('user_details',JSON.stringify(userData))
+      dispatch({type: USER_DETAILS, payload: userData});
+      console.log(responseData.success);
+    }else{
+      console.log('first')
+    }
+  } catch (error) {
+    console.log('error', error);
   }
+}
+  
+}
+export const addImageAfter = async (image,id,setIsLoading,ToastAndroid) => {
+  console.log('image', image)
+  setIsLoading(true)
+  const  userDetails =  await AsyncStorage.getItem('user_details')
+  const cnvrtData = JSON.parse(userDetails)
+    try {
+      let baseUrl = `${base_Url}store-images/${id}/${cnvrtData.data.id}`
+      let myData = new FormData()
+
+      myData.append('image',image)
+    
+      const response = await fetch(baseUrl,{
+        method: 'post',
+        body:myData
+      })
+      // console.log('response', response)
+  
+      const responseData = await response.json()
+      console.log('addImageAfter responseData', responseData)
+      if(responseData?.success?.status === 200){
+        ToastAndroid.show('Image has been added successfully!', ToastAndroid.LONG)
+        setIsLoading(false)
+        // console.log('responseData',responseData?.success)
+      }else{
+        setIsLoading(false)
+      }
+    } catch (error) {
+      setIsLoading(false)
+      console.log('addImageAfter error', error)
+    }
+  
 }

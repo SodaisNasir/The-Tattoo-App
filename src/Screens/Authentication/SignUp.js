@@ -37,6 +37,7 @@ const SignUp = ({navigation,route}) => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: {errors, isValid},
   } = useForm({
     mode: 'all',
@@ -292,21 +293,22 @@ restyle={{
        InputUText="Password"
        name="password"
        secureTextEntry={isPasswordSecure}
-       rules={{
-         required: 'Password is required',
-         minLength: {
-           value: 8,
-           message: 'Password too short (minimum length is 8)',
-         },
-       }}
+     rules={{
+            required: 'Password is required',
+            minLength: {
+              value: 8,
+              message: 'Password too short min length is 8',
+            },
+            maxLength: {
+              value: 16,
+              message: 'Password maximum length is 16',
+            },
+          }}
        textContentType={'password'}
        control={control}
-       style={styles.textInput}
-       textStyle={styles.InputTextStyle}
+       maxLength={20}
        //   placeholder={'Address'}
        keyboardType={'default'}
-       onChangeText={(text) => setPassword(text)}
-       onSubmitEditing={() => confirmPasswordRef.current.focus()}
        PIname={isPasswordSecure ? 'eye-off' : 'eye'}
        PIsize={20}
        PIcolor={'#05BC03'}
@@ -336,16 +338,21 @@ restyle={{
        value={password2}
        onChangeText={(text) => setPassword2(text)}
        rules={{
-         required: 'Confirm Password is required',
-         minLength: {
-           value: 8,
-           message: 'Confirm Password too short (minimum length is 8)',
-         },
-       }}
-       ref={(e) => (confirmPasswordRef.current = e)}
+        required: 'Confirm password is required',
+        minLength: {
+          value: 8,
+          message: 'Password too short (minimum length is 8)',
+        },
+        maxLength: {
+          value: 16,
+          message: 'Password too long (maximum length is 16)',
+        },
+        validate: {
+          positive: value =>
+            value === watch('password') || 'The passwords do not match',
+        },
+      }}
        control={control}
-       style={styles.textInput}
-       textStyle={styles.InputTextStyle}
        //   placeholder={'Confirm Password'}
        keyboardType={'default'}
        PIname={isPasswordSecure2 ? 'eye-off' : 'eye'}
@@ -356,6 +363,7 @@ restyle={{
          bottom: scale(32),
          left: scale(270),
        }}
+       maxLength={20}
        onPress={() => {
          isPasswordSecure2
            ? setIsPasswordSecure2(false)

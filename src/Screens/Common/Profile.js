@@ -6,11 +6,9 @@ import {
   View,
   Image,
   SafeAreaView,
-  TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from 'react-native'
-import {moderateScale, scale} from 'react-native-size-matters'
+import {scale} from 'react-native-size-matters'
 import BackArrow from '../../Components/BackArrow'
 import CustomButton from '../../Components/CustomButton'
 import Top2navigator from '../../Components/Top2bar'
@@ -20,17 +18,22 @@ import { base_image_Url } from '../../Utils/BaseUrl'
 import YourTatto from './YourTatto'
 import OthersTatto from './OthersTatto'
 import { Font } from '../../Assets/Fonts/Font'
+import { getRandomProfile } from '../../redux/actions/UserActions'
 
 const Profile = ({navigation}) => {
+    const userData = useSelector(state => state.user_details)
+
     const [btn1, setBtn1] = useState(true)
     const [btn2, setBtn2] = useState(false)
     const [data, setData] = useState(true)
     const [dataTwo, setDataTwo] = useState(false)
-    const userData = useSelector(state => state.user_details)
+    const [profileData, setProfileData] = useState([])
+    const [isLoading, setIsLoading] = useState(true);
+
     useFocusEffect(
       useCallback(() => {
         navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
-        // dispatch(getChapters(setData,item.id))
+        getRandomProfile(userData.data.id,setProfileData,setIsLoading)
       }, []),
     );
     const AllOne = () => {
@@ -45,12 +48,13 @@ const Profile = ({navigation}) => {
       setDataTwo(true)
       setData(false)
     }
-  
     const {
       control,
       handleSubmit,
       formState: {errors, isValid},
     } = useForm({mode: 'all'})
+
+
   return (
     <SafeAreaView style={styles.MainContainer}>
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -74,14 +78,26 @@ const Profile = ({navigation}) => {
         />
       </View>
       <View style={[styles.ImgCon,{overflow: 'hidden',}]}>
-      <Image 
-        style={{
-          height: '100%',
-          width: '100%'
-        }}
-        source={{uri: `${base_image_Url}` + userData?.data?.profile_image}}
-        resizeMode='cover'
-        />
+        {
+           userData?.data?.profile_image ?
+           <Image 
+           style={{
+             height: '100%',
+             width: '100%'
+            }}
+            source={{uri: `${base_image_Url}` + userData?.data?.profile_image}}
+            resizeMode='cover'
+            />
+            :
+            <Image 
+           style={{
+             height: '100%',
+             width: '100%'
+            }}
+            source={require('../../Assets/Images/default.png')}
+            resizeMode='cover'
+            />
+          }
       </View>
 
       <View style={styles.NameCon}>
@@ -102,11 +118,11 @@ const Profile = ({navigation}) => {
 
         <View style={styles.TwoBox}>
           <View style={styles.Box1}>
-            <Text style={styles.BoxexNum}>30</Text>
+            <Text style={styles.BoxexNum}>{profileData?.total_tattoo}</Text>
             <Text style={styles.BoxesText}>Tattoos</Text>
           </View>
           <View style={[styles.Box1, {marginLeft: scale(5)}]}>
-            <Text style={styles.BoxexNum}>30</Text>
+            <Text style={styles.BoxexNum}>{profileData?.total_like}</Text>
             <Text style={styles.BoxesText1}>Thumbs Ups</Text>
           </View>
         </View>
@@ -156,10 +172,11 @@ const styles = StyleSheet.create({
     ImgCon: {
       height: scale(120),
       width: scale(120),
-      backgroundColor: '#05BC03',
+      backgroundColor: 'white',
+      // backgroundColor: '#05BC03',
       borderRadius: 100,
       marginLeft: scale(110),
-      position: 'relative',
+      // position: 'relative',
       bottom: scale(65),
     },
     NameCon: {
@@ -192,18 +209,22 @@ const styles = StyleSheet.create({
     },
     BoxesText: {
       color: '#05BC03',
-      fontSize: scale(14),
-   fontFamily: Font.OpenSans700
+      fontSize: scale(15),
+      fontFamily: Font.Mulish700
     },
     BoxesText1: {
       color: '#05BC03',
-      fontSize: scale(12),
-   fontFamily: Font.OpenSans700
+      fontSize: scale(15),
+      fontFamily: Font.Mulish700,
+      
     },
     BoxexNum: {
       color: '#05BC03',
       fontSize: scale(27),
-      fontFamily: Font.OpenSans700
+     fontFamily: Font.Mulish700,
+     textShadowColor: 'rgb(0, 0, 0)',
+      textShadowOffset: {width: 0.5, height: 0.5},
+      textShadowRadius: scale(1),
     },
   })
 export default Profile

@@ -40,7 +40,6 @@ const ChangePass = ({navigation}) => {
     watch,
     formState: {errors, isValid},
   } = useForm({mode: 'all'})
-  const confirmPasswordRef = useRef()
 
 
   const onSubmit =  (data) => {
@@ -59,14 +58,20 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
           secureTextEntry={isPasswordSecure}
           textContentType={'password'}
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          // onChangeText={(text) => setPassword(text)}
           name="current_Password"
           rules={{
-            required: 'Current Password is required',
+            required: 'Current password is required',
+            minLength: {
+              value: 8,
+              message: ' Password too short min length is 8',
+            },
+            maxLength: {
+              value: 16,
+              message: 'Password maximum length is 16',
+            },
           }}
           control={control}
-          style={styles.textInput}
-          textStyle={styles.InputTextStyle}
           //   placeholder={'Confirm Password'}
           keyboardType={'default'}
           PIname={isPasswordSecure ? 'eye-off' : 'eye'}
@@ -96,18 +101,20 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
           secureTextEntry={isPasswordSecure1}
           textContentType={'password'}
           value={password1}
-          onChangeText={(text1) => setPassword1(text1)}
+          // onChangeText={(text1) => setPassword1(text1)}
           name="new_Password"
           rules={{
-            required: 'New Password is required',
+            required: 'New password is required',
             minLength: {
               value: 8,
-              message: 'New Password too short (minimum length is 8)',
+              message: ' Password too short min length is 8',
+            },
+            maxLength: {
+              value: 16,
+              message: 'Password maximum length is 16',
             },
           }}
           control={control}
-          style={styles.textInput}
-          textStyle={styles.InputTextStyle}
           //   placeholder={'Confirm Password'}
           keyboardType={'default'}
           PIname={isPasswordSecure1 ? 'eye-off' : 'eye'}
@@ -129,10 +136,7 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
           restyle={{
             height: scale(43),
           }}
-          onSubmitEditing={() => confirmPasswordRef.current.focus()}
-          onFocus={() => {
-            setIndex(1)
-          }}
+          maxLength={20}
           password={true}
         />
         {errors.new_Password && <Validation title={errors.new_Password.message} />}
@@ -141,28 +145,25 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
           secureTextEntry={isPasswordSecure3}
           textContentType={'password'}
           value={password3}
-          onChangeText={(text3) => setPassword3(text3)}
           name="confirm_Password"
           rules={{
-            required: 'Confirm Password is required',
+            required: 'Confirm password is required',
             minLength: {
               value: 8,
-              message:  'Confirm Password too short (minimum length is 8)',
+              message: 'Password too short (minimum length is 8)',
             },
             maxLength: {
               value: 16,
-              message: 'Confirm Password too long (maximum length is 16)',
+              message: 'Password too long (maximum length is 16)',
             },
             validate: {
-              positive: (value) =>
-                value === watch('new_Password') || 'Confirm The passwords do not match',
+              positive: value =>
+                value === watch('new_Password') || 'The passwords do not match',
             },
           }}
-          ref={(e) => (confirmPasswordRef.current = e)}
+          maxLength={20}
           control={control}
           password={true}
-          style={styles.textInput}
-          textStyle={styles.InputTextStyle}
           //   placeholder={'Confirm Password'}
           keyboardType={'default'}
           PIname={isPasswordSecure1 ? 'eye-off' : 'eye'}
@@ -185,7 +186,7 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
             height: scale(43),
           }}
         />
-        {/* {errors.Email && <Validation title={errors.Email.message} />} */}
+        {errors.confirm_Password && <Validation title={errors.confirm_Password.message} />}
         <CustomButton
           onPress={handleSubmit(onSubmit)}
           text={'Continue'}

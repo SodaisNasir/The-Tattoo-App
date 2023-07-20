@@ -13,17 +13,21 @@ import {USER_DETAILS} from '../../redux/reducer/Holder'
 import {useDispatch, useSelector} from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
+import { editNotification } from '../../redux/actions/UserActions'
 const SettingOpt = ({navigation}) => {
     const dispatch = useDispatch()
-
-    const [isEnabled, setIsEnabled] = useState(true)
-    const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+    const userData = useSelector((state) => state.user_details)
+    const [isEnabled, setIsEnabled] = useState(userData?.data?.notification_status == "Active" ?  true : false)
     useFocusEffect(
       useCallback(() => {
         navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
         // dispatch(getChapters(setData,item.id))
       }, []),
-    );
+      );
+      const toggleSwitch = () => {
+        setIsEnabled((previousState) => !previousState)
+        dispatch(editNotification(userData))
+      }
     const logOut = async () => {
       await AsyncStorage.removeItem('user_details')
       dispatch({type: USER_DETAILS,payload: null})

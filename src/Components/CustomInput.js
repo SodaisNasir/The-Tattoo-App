@@ -44,6 +44,8 @@ const CustomInput = forwardRef((props, ref) => {
         placeholderStyle={props.placeholderStyle}
         fontSize={props.fontSize}
         maxLength={props.maxLength}
+        onFocus={props.onFocus}
+        onBlur={props.onBlur}
       />
       <TouchableOpacity>
         <Icon

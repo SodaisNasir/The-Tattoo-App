@@ -120,9 +120,9 @@ const refrshView =  () => {
 }
 
 const goToProfile = () => {
-  dispatch(getRandomProfile(data.user_id))
+  // dispatch(getRandomProfile(data.user_id))
   setModalVisible(false)
-  navigation.navigate('RandomProfile')
+  navigation.navigate('RandomProfile',{id: data.user_id})
 }
 const handleSearch = text2 => {
   setSkinTone([])
@@ -207,18 +207,26 @@ const sendComment = (item) => {
       />
     </TouchableOpacity>
     </View>
-  
-    <StaggeredList
-      data={filteredData.length > 0 && skinTone.length < 1? filteredData : skinTone.length > 0 ? skinTone : alltatto}
-      animationType={'FADE_IN_FAST'}
-      contentContainerStyle={{
-        paddingVertical: 10,
-        paddingLeft: 5,
-      }}
-      showsVerticalScrollIndicator={false}
-      renderItem={({item}) => renderChildren(item)}
-      onRefresh={() => refrshView()}
-    />
+        {
+          alltatto.length > 0 ?
+          <StaggeredList
+            data={filteredData.length > 0 && skinTone.length < 1? filteredData : skinTone.length > 0 ? skinTone : alltatto}
+            animationType={'FADE_IN_FAST'}
+            contentContainerStyle={{
+              paddingVertical: 10,
+              paddingLeft: 5,
+            }}
+            showsVerticalScrollIndicator={false}
+            renderItem={({item}) => renderChildren(item)}
+            onRefresh={() => refrshView()}
+          />
+          : 
+          <View style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}><Text style={{color: 'white',fontFamily: Font.Mulish700}}>No tattoos found!</Text></View>
+        }
 <View style={{height: verticalScale(50)}} />
     <Modal
       onBackdropPress={() => setChooseColor(false)}
@@ -497,6 +505,55 @@ const sendComment = (item) => {
                 )
               })
             }
+            {
+              data?.images?.map((item,index) => {
+                return(
+                  <>
+                  <TouchableOpacity onPress={() => setSelectImage(item.image)}>
+          <View
+          key={index}
+            style={{
+              height: verticalScale(90),
+              width: scale(80),
+              margin:3,
+            
+            }}>
+            <View
+              style={{
+                height: scale(70),
+                width: '100%',
+                borderRadius: 10,
+                overflow: 'hidden',
+                borderWidth: item == selectImage ? 1 : 0,
+                borderColor: item == selectImage ? 'green' : 'red'
+              }}>
+              <Image
+                style={{
+                  flex: 1,
+                
+                }}
+                source={{
+                  uri: `${base_image_Url}` + item.image,
+                }}
+                resizeMode={'cover'}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 11,
+                color: 'white',
+                marginTop: scale(2),
+                fontFamily: Font.OpenSans400,
+              }}>
+              {/* 1 Day ago */}
+              {moment(item?.created_at).fromNow()}
+            </Text>
+          </View>
+                  </TouchableOpacity>
+                  </>
+                )
+              })
+            }
             </ScrollView>
         </View>
       </ScrollView>
@@ -541,15 +598,27 @@ const sendComment = (item) => {
                   overflow: 'hidden',
                   borderRadius: 100,
                 }}>
-                  <Image 
-                  style={{
+                  {
+                    item.profile_image ?
+                    <Image 
+                    style={{
                     height: '100%',
                     width: '100%',
                   }}
                   source={{
                     uri: `${base_image_Url}` + item.profile_image
                   }}
-                  />
+                  /> 
+                  :
+                  <Image 
+                  style={{
+                    height: '100%',
+                    width: '100%'
+                   }}
+                   source={require('../../Assets/Images/default.png')}
+                   resizeMode='cover'
+                   />
+                }
                 </View>
               </View>
               <View style={{marginTop: scale(10),maxWidth: '70%',borderRadius:10,overflow: 'hidden',}}>

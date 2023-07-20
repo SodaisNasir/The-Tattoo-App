@@ -116,6 +116,14 @@ const device = Platform.OS
           name="password"
           rules={{
             required: 'Password is required',
+            minLength: {
+              value: 8,
+              message: 'Password too short min length is 8',
+            },
+            maxLength: {
+              value: 16,
+              message: 'Password maximum length is 16',
+            },
           }}
           control={control}
           style={styles.textInput}

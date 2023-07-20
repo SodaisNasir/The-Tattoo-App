@@ -125,7 +125,9 @@ const submitProfile = (data) => {
         />
       </View>
         <View style={[styles.ImgCon,{overflow:'hidden'}]}>
-        <Image 
+          {
+            saveImage2?.uri || userData?.data?.profile_image ? 
+<Image 
         style={{
           height: '100%',
           width: '100%'
@@ -133,6 +135,17 @@ const submitProfile = (data) => {
         source={{uri: saveImage2?.uri ? saveImage2?.uri : `${base_image_Url}` + userData?.data?.profile_image}}
         resizeMode='cover'
         />
+:
+<Image 
+style={{
+  height: '100%',
+  width: '100%'
+ }}
+ source={require('../../Assets/Images/default.png')}
+ resizeMode='cover'
+ />
+          }
+        
         </View>
           <TouchableOpacity style={{
              height: scale(25),
@@ -318,7 +331,8 @@ const styles = StyleSheet.create({
     ImgCon: {
       height: scale(120),
       width: scale(120),
-      backgroundColor: '#05BC03',
+      backgroundColor: 'white',
+      // backgroundColor: '#05BC03',
       borderRadius: 100,
       position: 'absolute',
       // bottom: scale(-50),

@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import BackArrow from '../../Components/BackArrow'
@@ -17,6 +18,7 @@ import { useSelector } from 'react-redux'
 import { base_image_Url } from '../../Utils/BaseUrl'
 import { useFocusEffect } from '@react-navigation/native'
 import { Font } from '../../Assets/Fonts/Font'
+import { getRandomProfile } from '../../redux/actions/UserActions'
 
 const width = Dimensions.get('screen').width
 
@@ -29,13 +31,18 @@ const images = [
   {id: '6', img: require('../../Assets/Images/people.png'), text: 'h6'},
 ]
 
-const RandomProfile = ({navigation}) => {
-  const profileData = useSelector((state) => state.randomprofile)
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
-  //   }, []),
-  // );
+const RandomProfile = ({route,navigation}) => {
+  const {id} = route.params
+  // const profileData = useSelector((state) => state.randomprofile)
+  const [profileData, setProfileData] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useFocusEffect(
+    useCallback(() => {
+   getRandomProfile(id,setProfileData,setIsLoading)
+    }, []),
+  );
   const {
     control,
     handleSubmit,
@@ -77,6 +84,13 @@ const RandomProfile = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.MainContainer}>
+      {
+        isLoading ?
+        <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+          <ActivityIndicator color={'white'} size={scale(25)} />
+          <Text style={{color: 'white',fontFamily: Font.Mulish700}}>Loading...</Text>
+        </View>
+        :
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.ProContainer}>
           <BackArrow
@@ -109,7 +123,7 @@ const RandomProfile = ({navigation}) => {
         </View>
 
         <View style={styles.NameCon}>
-          <Text style={styles.NameText}>{profileData?.data.name}</Text>
+          <Text style={styles.NameText}>{profileData?.data?.name}</Text>
 
           <View style={styles.TwoBox}>
             <View style={styles.Box1}>
@@ -134,6 +148,7 @@ const RandomProfile = ({navigation}) => {
           />
         </View>
       </ScrollView>
+      }
       <View  style={{height: verticalScale(20)}}/>
     </SafeAreaView>
   )

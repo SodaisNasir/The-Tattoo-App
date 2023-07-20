@@ -1,4 +1,4 @@
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import React, {useCallback, useState} from 'react'
 import {
   StyleSheet,
@@ -10,6 +10,7 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native'
 import {scale, verticalScale} from 'react-native-size-matters'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -28,19 +29,17 @@ const width = Dimensions.get('screen').width
 
 const OthersTatto = () => {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const alltatto = useSelector(state => state.alltatto)
-  const skintones = useSelector(state => state.skintones)
   const [data, setData] = useState([])
   const [images, setImages] = useState([])
-  const [skinTone, setSkinTone] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
   const [modalVisible3, setModalVisible3] = useState(false)
   const [isLike, setIsLike] = useState(false)
-  const [chooseColor, setChooseColor] = useState(false)
   const [selectImage,setSelectImage] = useState()
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredData, setFilteredData] = useState([]);
   const [commentsData, setCommentsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const {
     control,
@@ -91,11 +90,10 @@ const refrshView =  () => {
       dispatch(getAllTatto())
       dispatch(getSkinTones())
       dispatch(getCreators())
-      setSkinTone([])
 }
 const goToProfile = () => {
   setModalVisible(false)
-  // navigation.navigate('RandomProfile')
+  navigation.navigate('RandomProfile',{id:data.user_id})
 }
 
 const likePost = (id) => {
@@ -113,20 +111,29 @@ const sendComment = (item) => {
   }, 1000);
 }
 
+
   return (
     <SafeAreaView style={{flex:1}}>
-      <StaggeredList
-      data={filteredData.length > 0 && skinTone.length < 1? filteredData : skinTone.length > 0 ? skinTone : alltatto}
-      animationType={'FADE_IN_FAST'}
-      contentContainerStyle={{
-        paddingVertical: 10,
-        paddingLeft: 5,
-      }}
-      showsVerticalScrollIndicator={false}
-      renderItem={({item}) => renderChildren(item)}
-      onRefresh={() => refrshView()}
-    />
-
+      {
+        alltatto.length > 0 ?
+        <StaggeredList
+        data={alltatto}
+        animationType={'FADE_IN_FAST'}
+        contentContainerStyle={{
+          paddingVertical: 10,
+          paddingLeft: 5,
+        }}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => renderChildren(item)}
+        onRefresh={() => refrshView()}
+        />
+       :
+       <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}><Text style={{color: 'white',fontFamily: Font.Mulish500}}>No tattoos found!</Text></View>
+      }
 <Modal
       onBackdropPress={() => (setModalVisible(false),setIsLike(false))}
       animationType="slide"
@@ -358,16 +365,29 @@ const sendComment = (item) => {
                   width: scale(40),
                   overflow: 'hidden',
                   borderRadius: 100,
+                  backgroundColor: 'white'
                 }}>
-                  <Image 
-                  style={{
+                  {
+                    item.profile_image ?
+                    <Image 
+                    style={{
                     height: '100%',
                     width: '100%',
                   }}
                   source={{
                     uri: `${base_image_Url}` + item.profile_image
                   }}
-                  />
+                  /> 
+                  :
+                  <Image 
+                  style={{
+                    height: '100%',
+                    width: '100%'
+                   }}
+                   source={require('../../Assets/Images/default.png')}
+                   resizeMode='cover'
+                   />
+                }
                 </View>
               </View>
               <View style={{marginTop: scale(10),maxWidth: '70%',borderRadius:10,overflow: 'hidden',}}>

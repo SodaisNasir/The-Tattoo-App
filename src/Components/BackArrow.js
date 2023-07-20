@@ -5,11 +5,10 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 const BackArrow = (props) => {
   return (
-    <TouchableOpacity
-      onPress={props.onPress}
-      style={[styles.Arrow, props.restyle]}>
-      {/* <Image source={require('../Assets/Images/arrow.png')} /> */}
+    <TouchableOpacity onPress={props.onPress}>
+        <View style={[styles.Arrow, props.restyle]}>
       <FontAwesome5 name="angle-left" size={25} color={'black'} />
+        </View>
     </TouchableOpacity>
   )
 }
