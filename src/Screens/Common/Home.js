@@ -53,7 +53,7 @@ const Home = ({navigation,scrollViewRef}) => {
   const [commentsData, setCommentsData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [check, setCheck] = useState(false)
-
+console.log('isLike', isLike)
   // const scrollViewRef = useRef()
 
   // useEffect(() => {
@@ -181,6 +181,7 @@ const handleRefresh = () => {
       setRefreshing(false);
     }, 2000);
 };
+console.log(data.like_status)
   return (
     <>
     <StatusBar backgroundColor={'black'} barStyle={'light-content'} />
@@ -473,7 +474,8 @@ const handleRefresh = () => {
               paddingLeft: scale(5),
             }}
             >
-             {data.like_status == 0 && isLike ? parseInt(data?.like) + 1 : data.like_status == 1 && isLike ? parseInt(data?.like) - 1 : data?.like} Likes
+              {data?.like_status == 1 && isLike ? parseInt(data?.like) - 1 : data.like} Likes
+             {/* {data.like_status == 1 && isLike ? parseInt(data?.like) + 1 : data.like_status == 1 && isLike ? parseInt(data?.like) - 1 : data?.like} Likes */}
           </Text>
           <TouchableOpacity
             onPress={() => commnetsModal()}

@@ -189,7 +189,6 @@ const YourTatto = () => {
     }
     const renderItem = ({item}) => {
         const cnvrtData = JSON.parse(item.image)
-        console.log('item', item)
         return (
           <View style={styles.CardContainer}>
             <View style={styles.NameContainer}>

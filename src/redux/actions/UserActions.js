@@ -440,8 +440,11 @@ export const getAllLikedTatto = () => {
     })
 
     const responseData = await response.json()
+    console.log('getAllLikedTatto responseData', responseData)
     if(responseData?.success?.status === 200){
       dispatch({type: LIKED_TATTO, payload: responseData?.success?.data})
+    }else if(responseData?.error?.status == 400){
+      dispatch({type: LIKED_TATTO, payload: []})
     }
           
       } catch (error) {

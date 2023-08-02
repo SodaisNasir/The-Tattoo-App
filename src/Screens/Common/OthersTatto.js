@@ -41,7 +41,11 @@ const OthersTatto = () => {
   const [commentsData, setCommentsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getAllLikedTatto())
+    }, []),
+  );
   const {
     control,
     handleSubmit,
@@ -117,7 +121,7 @@ const closeModal = () =>{
   setModalVisible(false)
   setIsLike(false)
 }
-
+console.log('data?.like_status', data?.like_status)
   return (
     <SafeAreaView style={{flex:1}}>
       {
