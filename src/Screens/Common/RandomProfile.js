@@ -19,6 +19,7 @@ import { base_image_Url } from '../../Utils/BaseUrl'
 import { useFocusEffect } from '@react-navigation/native'
 import { Font } from '../../Assets/Fonts/Font'
 import { getRandomProfile } from '../../redux/actions/UserActions'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 const width = Dimensions.get('screen').width
 
@@ -97,14 +98,22 @@ const RandomProfile = ({route,navigation}) => {
             width: scale(34),
             borderRadius: 100,
             backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
+
             position: 'absolute',
             top: scale(20),
             left: scale(20),
             zIndex: 999,
         }}>
-      {/* <FontAwesome5 name="angle-left" size={25} color={'black'} /> */}
+          <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={{
+            height:'100%',
+            width:'100%',
+          justifyContent: 'center',
+            alignItems: 'center',
+            }}>
+      <FontAwesome5 name="angle-left" size={scale(22)} color={'black'} />
+          </TouchableOpacity>
         </View>
         <View style={styles.ProContainer}>
         

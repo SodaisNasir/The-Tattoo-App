@@ -13,6 +13,7 @@ import {
   FlatList,
   TextInput,
   StatusBar,
+  RefreshControl,
 } from 'react-native'
 import StaggeredList from '@mindinventory/react-native-stagger-view'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
@@ -31,10 +32,11 @@ import SearchInput from '../../Components/SearchInput'
 import moment from 'moment';
 import CommentsInput from '../../Components/CommentsInput'
 import { Font } from '../../Assets/Fonts/Font'
+import IncorrectModal from '../../Components/Modal/IncorrectModal'
 
 const width = Dimensions.get('screen').width
 
-const Home = ({navigation}) => {
+const Home = ({navigation,scrollViewRef}) => {
   const dispatch = useDispatch()
   const alltatto = useSelector(state => state.alltatto)
   const skintones = useSelector(state => state.skintones)
@@ -49,13 +51,24 @@ const Home = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [commentsData, setCommentsData] = useState([]);
-  console.log('data', data)
+  const [refreshing, setRefreshing] = useState(false);
+  const [check, setCheck] = useState(false)
+
   // const scrollViewRef = useRef()
 
   // useEffect(() => {
   //   scrollViewRef.current.scrollToEnd({animated: true})
   // }, [])
 
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getAllTatto())
+      dispatch(getAllLikedTatto())
+      dispatch(getSkinTones())
+      dispatch(getCreators())
+      dispatch(getUsers())
+    },[])
+  )
   const {
     control,
     handleSubmit,
@@ -102,7 +115,7 @@ const Home = ({navigation}) => {
     setModalVisible(true)
   } 
   const handlePress = (item) => {
-    getSkinTone(item,setSkinTone)
+    getSkinTone(item,setSkinTone,setCheck)
     setChooseColor(false)
   }
 const refrshView =  () => {
@@ -112,8 +125,11 @@ const refrshView =  () => {
   dispatch(getCreators())
   dispatch(getUsers())
       setSkinTone([])
+      setCheck(false)
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
 }
-
 const goToProfile = () => {
   // dispatch(getRandomProfile(data.user_id))
   setModalVisible(false)
@@ -152,6 +168,19 @@ const closeModal = () =>{
   setModalVisible(false)
   setIsLike(false)
 }
+const handleRefresh = () => {
+    setRefreshing(true);
+    dispatch(getAllTatto())
+    dispatch(getAllLikedTatto())
+    dispatch(getSkinTones())
+    dispatch(getCreators())
+    dispatch(getUsers())
+    setSkinTone([])
+    setCheck(false)
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+};
   return (
     <>
     <StatusBar backgroundColor={'black'} barStyle={'light-content'} />
@@ -215,7 +244,7 @@ const closeModal = () =>{
     </TouchableOpacity>
     </View>
         {
-          alltatto.length > 0 ?
+          alltatto.length && !check > 0 ?
           <StaggeredList
             data={filteredData.length > 0 && skinTone.length < 1? filteredData : skinTone.length > 0 ? skinTone : alltatto}
             animationType={'FADE_IN_FAST'}
@@ -230,9 +259,21 @@ const closeModal = () =>{
           : 
           <View style={{
             flex: 1,
+          }}>
+            <ScrollView
+          contentContainerStyle={{
+            flex: 1,
             justifyContent: 'center',
             alignItems: 'center'
-          }}><Text style={{color: 'white',fontFamily: Font.Mulish700}}>No tattoos found!</Text></View>
+          }}
+            showsVerticalScrollIndicator={false}
+            ref={scrollViewRef}
+            refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={refrshView} />
+          }>
+            <Text style={{color: 'white',fontFamily: Font.Mulish700}}>No tattoos found!</Text>
+            </ScrollView>
+            </View>
         }
 <View style={{height: verticalScale(50)}} />
     <Modal
@@ -709,6 +750,13 @@ const closeModal = () =>{
   </View>
       </View>
     </Modal>
+
+    {/* <IncorrectModal
+          text={'Not found'}
+          onPress={() => setCheck(false)}
+          onBackdropPress={() => setCheck(false)}
+          isVisible={check}
+        /> */}
     </SafeAreaView>
     </>
   )

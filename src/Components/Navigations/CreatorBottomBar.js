@@ -47,14 +47,17 @@ const CreatorBottomNavigator = () => {
               return null
             },
             tabBarIcon: ({color}) => (
+              <View
+              style={{
+                height: scale(30), width: scale(30), overflow: 'hidden',
+              }}
+              >
+
               <Image
-                style={{
-                  height: scale(30),
-                  width: scale(30),
-                  borderRadius: 100,
-                }}
+                style={{height: '100%',width: '100%'}}
                 source={require('../../Assets/Images/menu.png')}
-              />
+                />
+                </View>
             ),
           }}
         />

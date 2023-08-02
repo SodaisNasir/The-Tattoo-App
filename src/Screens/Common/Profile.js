@@ -7,6 +7,7 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native'
 import {scale} from 'react-native-size-matters'
 import BackArrow from '../../Components/BackArrow'
@@ -18,6 +19,7 @@ import { base_image_Url } from '../../Utils/BaseUrl'
 import YourTatto from './YourTatto'
 import OthersTatto from './OthersTatto'
 import { Font } from '../../Assets/Fonts/Font'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { getAllLikedTatto, getAllTatto, getRandomProfile } from '../../redux/actions/UserActions'
 
 const Profile = ({navigation}) => {
@@ -63,8 +65,30 @@ const Profile = ({navigation}) => {
   return (
     <SafeAreaView style={styles.MainContainer}>
     <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={{
+            height: scale(34),
+            width: scale(34),
+            borderRadius: 100,
+            backgroundColor: 'white',
+
+            position: 'absolute',
+            top: scale(20),
+            left: scale(20),
+            zIndex: 999,
+        }}>
+          <TouchableOpacity 
+          onPress={() => navigation.goBack()}
+          style={{
+            height:'100%',
+            width:'100%',
+          justifyContent: 'center',
+            alignItems: 'center',
+            }}>
+      <FontAwesome5 name="angle-left" size={scale(22)} color={'black'} />
+          </TouchableOpacity>
+        </View>
       <View style={styles.ProContainer}>
-        <BackArrow
+        {/* <BackArrow
           onPress={() => navigation.goBack()}
           restyle={{
             position: 'absolute',
@@ -72,7 +96,7 @@ const Profile = ({navigation}) => {
             left: scale(20),
             zIndex: 10,
           }}
-        />
+        /> */}
           <Image 
         style={{
           height: '100%',

@@ -13,7 +13,6 @@ import { getAllLikedTatto, getAllTatto, getCreators, getSkinTones, getUsers } fr
 
 const App = () => {
   const dispatch = useDispatch()
-
   const user_details = useSelector((state) => state.user_details)
   const role_id = useSelector((state) => state.role_id)
 

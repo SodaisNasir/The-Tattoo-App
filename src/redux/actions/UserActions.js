@@ -21,6 +21,7 @@ export const getAllTatto = () => {
   
       const responseData = await response.json()
       if(responseData?.success?.status === 200){
+        console.log('getAllTatto',responseData?.success?.data)
         dispatch({type: ALLTATTO, payload: responseData?.success?.data})
       }
             
@@ -224,7 +225,7 @@ export const creatorAddUser = async (data, setBtn1,setBtn2,setChooseColor,ToastA
     setBtnLoader(false)
   }
 }
-export const getSkinTone = async (code,setData) => {
+export const getSkinTone = async (code,setData,setCheck) => {
   try {
     let baseUrl = `${base_Url}skin-tattoo`
     let myData = new FormData()
@@ -238,12 +239,15 @@ export const getSkinTone = async (code,setData) => {
     })
 
     const responseData = await response.json()
-    console.log('responseData', responseData)
+    console.log('getSkinTone responseData', responseData)
     if(responseData?.success?.status === 200){
       setData(responseData?.success?.data)
+    }else if(responseData?.error?.status === 400){
+      setCheck(true)
+      setData([])
     }
   } catch (error) {
-    console.log('error', error)
+    console.log('getSkinTone error', error)
   }
 }
 export const likedByID = async (id) => {
@@ -382,8 +386,9 @@ return async (dispatch) => {
 }
   
 }
-export const addImageAfter = async (image,id,setIsLoading,ToastAndroid,selectDate) => {
+export const addImageAfter = async (image,id,setIsLoading,ToastAndroid,selectDate,setShow,setModalVisible) => {
   setIsLoading(true)
+  setShow(true)
   const  userDetails =  await AsyncStorage.getItem('user_details')
   const cnvrtData = JSON.parse(userDetails)
     try {
@@ -397,18 +402,26 @@ export const addImageAfter = async (image,id,setIsLoading,ToastAndroid,selectDat
         method: 'post',
         body:myData
       })
-      // console.log('response', response)
+     
   
       const responseData = await response.json()
-      console.log('addImageAfter responseData', responseData)
+   
       if(responseData?.success?.status === 200){
-        ToastAndroid.show('Image has been added successfully!', ToastAndroid.LONG)
+        setShow(false)
+        setModalVisible(false)
+        ToastAndroid.show('Tattoo has been added successfully!', ToastAndroid.LONG)
         setIsLoading(false)
         // console.log('responseData',responseData?.success)
       }else{
+        setModalVisible(false)
+        setShow(false)
         setIsLoading(false)
+        alert('Something went wrong!')
       }
     } catch (error) {
+      alert('Something went wrong!')
+      setModalVisible(false)
+      setShow(false)
       setIsLoading(false)
       console.log('addImageAfter error', error)
     }

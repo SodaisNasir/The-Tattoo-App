@@ -97,7 +97,10 @@ const AddTatto = ({navigation}) => {
     }
 
     
-  return (
+  return loader ?   <Loader
+  onBackdropPress={() => setLoader(false)}
+  isVisible={loader}
+  /> : (
     <SafeAreaView style={styles.MainContainer}>
       <BackArrwBtn text={'add new tattoo'} onPress={() => navigation.goBack()}/>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -332,10 +335,10 @@ const AddTatto = ({navigation}) => {
           </View>
         </Modal>
       </ScrollView>
-      <Loader
+      {/* <Loader
         onBackdropPress={() => setLoader(false)}
         isVisible={loader}
-        /> 
+        />  */}
          <TickModal
           text={'Tattoo Added Successfully'}
           onPress={() => setCheck(false)}

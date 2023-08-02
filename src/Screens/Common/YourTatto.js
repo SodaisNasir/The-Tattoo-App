@@ -45,15 +45,17 @@ const YourTatto = () => {
     const [saveIMage, setSaveImage] = useState({})
     const [tattoId, setTattoId] = useState()
     const [selectDate,setSelectDate] = useState()
+    const [show,setShow] = useState(false)
     const [date,setdate] = useState([
-      {label: 'Just done', value: 'Just done'},
-      {label: '1 week', value: '1 week'},
-      {label: '1 month', value: '1 month'},
-      {label: '2 months', value: '2 months'},
-      {label: '1 year', value: '1 year'},
-      {label: '2 years', value: '2 years'},
-      {label: '3 years', value: '3 years'},
-      {label: '5+ years', value: '5+ years'},
+      {label: 'Just Now', value: 'Just Now'},
+      {label: '1 Week', value: '1 Week'},
+      {label: '1 Month', value: '1 Month'},
+      {label: '2 Months', value: '2 Months'},
+      {label: '1 Year', value: '1 Year'},
+      {label: '2 Years', value: '2 Years'},
+      {label: '3 Years', value: '3 Years'},
+      {label: '4 Years', value: '4 Years'},
+      {label: '5 Years', value: '5 Years'},
     ])
 
     const {
@@ -329,10 +331,12 @@ const YourTatto = () => {
           tattoId,
           setIsLoading2,
           ToastAndroid,
-          selectDate
+          selectDate,
+          setShow,
+          setModalVisible
           )
         }else{
-          alert('Please select date and tattoo')
+          alert('Please select time and tattoo')
         }
     }
   return (
@@ -407,7 +411,7 @@ const YourTatto = () => {
                   color: 'white',
                   fontSize: 18,
                 }}
-                text={'Update'}
+                text={show ? <ActivityIndicator size={'small'} color={'black'} /> : 'Update'}
                 // btnLoader={btnLoader}
                 />
 
