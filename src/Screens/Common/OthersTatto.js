@@ -15,7 +15,7 @@ import {
 import {scale, verticalScale} from 'react-native-size-matters'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { getAllTatto, getCommentsByID, getCreators, getMyTattos, getSkinTone, getSkinTones, likedByID, send_Comments } from '../../redux/actions/UserActions'
+import { getAllLikedTatto, getAllTatto, getCommentsByID, getCreators, getMyTattos, getSkinTone, getSkinTones, likedByID, send_Comments } from '../../redux/actions/UserActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { base_image_Url } from '../../Utils/BaseUrl'
 import CommentsInput from '../../Components/CommentsInput'
@@ -23,6 +23,7 @@ import Modal from 'react-native-modal'
 import { useForm } from 'react-hook-form'
 import StaggeredList from '@mindinventory/react-native-stagger-view'
 import { Font } from '../../Assets/Fonts/Font'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import moment from 'moment'
 
 const width = Dimensions.get('screen').width
@@ -30,12 +31,12 @@ const width = Dimensions.get('screen').width
 const OthersTatto = () => {
   const dispatch = useDispatch()
   const navigation = useNavigation()
-  const alltatto = useSelector(state => state.alltatto)
+  const alltatto = useSelector(state => state.liked_tatto)
   const [data, setData] = useState([])
   const [images, setImages] = useState([])
   const [modalVisible, setModalVisible] = useState(false)
   const [modalVisible3, setModalVisible3] = useState(false)
-  const [isLike, setIsLike] = useState(false)
+  const [isLike, setIsLike] = useState(true)
   const [selectImage,setSelectImage] = useState()
   const [commentsData, setCommentsData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,7 +111,12 @@ const sendComment = (item) => {
     getCommentsByID(data.id,setCommentsData)
   }, 1000);
 }
-
+const closeModal = () =>{
+  dispatch(getAllTatto())
+  dispatch(getAllLikedTatto())
+  setModalVisible(false)
+  setIsLike(false)
+}
 
   return (
     <SafeAreaView style={{flex:1}}>
@@ -134,14 +140,31 @@ const sendComment = (item) => {
         alignItems: 'center'
       }}><Text style={{color: 'white',fontFamily: Font.Mulish500}}>No tattoos found!</Text></View>
       }
-<Modal
-      onBackdropPress={() => (setModalVisible(false),setIsLike(false))}
+     <Modal
+      onBackdropPress={() => closeModal()}
       animationType="slide"
       // transparent={true}
       visible={modalVisible}
       style={{margin:0,backgroundColor: 'rgba(0,0,0,1)'}}
       >
-    <View style={{flex: 0.8,marginHorizontal: scale(15)}}>
+    <View style={{flex: 1,marginHorizontal: scale(15)}}>
+      <View style={{
+        height: '10%',
+        justifyContent: 'center'
+      }}>
+        <TouchableOpacity onPress={() => closeModal()}>
+        <View style={{
+          height: scale(35),
+          width: scale(35),
+          // backgroundColor: 'white',
+          borderRadius:100,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+           <FontAwesome5 name="angle-left" size={25} color={'white'} />
+        </View>
+          </TouchableOpacity>
+      </View>
       <ScrollView>
         <View style={{
           height: verticalScale(40),
@@ -212,7 +235,7 @@ const sendComment = (item) => {
         }}>
            <TouchableOpacity onPress={() => likePost(data.id)}>
             <AntDesign
-              name={data.like_status == 1 ? 'like1' : isLike ? 'like1' : 'like2'}
+              name={data.like_status == 0 && isLike  ? 'like1' : data.like_status == 1 && !isLike ? 'like1' : 'like2'}
               size={scale(20)}
               color={'white'}
             />
@@ -224,7 +247,7 @@ const sendComment = (item) => {
               color: 'white',
               paddingLeft: scale(5),
             }}>
-             {isLike ? parseInt(data?.like) + 1 : data?.like} Likes
+             {data.like_status == 0 && isLike ? parseInt(data?.like) + 1 : data.like_status == 1 && isLike ? parseInt(data?.like) - 1 : data?.like} Likes
           </Text>
           <TouchableOpacity
             onPress={() => commnetsModal()}
@@ -275,6 +298,7 @@ const sendComment = (item) => {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {
               images?.map((item,index) => {
+                console.log('item', item)
                 return(
                   <>
                   <TouchableOpacity onPress={() => setSelectImage(item)}>
@@ -314,7 +338,59 @@ const sendComment = (item) => {
                 fontFamily: Font.OpenSans400,
               }}>
               {/* 1 Day ago */}
-              {moment(data?.created_at).fromNow()}
+              {data?.time}
+              {/* {moment(data?.created_at).fromNow()} */}
+            </Text>
+          </View>
+                  </TouchableOpacity>
+                  </>
+                )
+              })
+            }
+            {
+              data?.images?.map((item,index) => {
+                console.log('item', item)
+                return(
+                  <>
+                  <TouchableOpacity onPress={() => setSelectImage(item.image)}>
+          <View
+          key={index}
+            style={{
+              height: verticalScale(90),
+              width: scale(80),
+              margin:3,
+            
+            }}>
+            <View
+              style={{
+                height: scale(70),
+                width: '100%',
+                borderRadius: 10,
+                overflow: 'hidden',
+                borderWidth: item == selectImage ? 1 : 0,
+                borderColor: item == selectImage ? 'green' : 'red'
+              }}>
+              <Image
+                style={{
+                  flex: 1,
+                
+                }}
+                source={{
+                  uri: `${base_image_Url}` + item.image,
+                }}
+                resizeMode={'cover'}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 11,
+                color: 'white',
+                marginTop: scale(2),
+                fontFamily: Font.OpenSans400,
+              }}>
+              {/* 1 Day ago */}
+              {item?.time}
+              {/* {moment(item?.created_at).fromNow()} */}
             </Text>
           </View>
                   </TouchableOpacity>
@@ -336,7 +412,7 @@ const sendComment = (item) => {
           justifyContent: 'flex-end'
         }}
         isVisible={modalVisible3}
-        onBackdropPress={() => (setModalVisible3(false),setCommentsData([]))}
+        onBackdropPress={() => (setModalVisible3(false))}
         // swipeDirection="down"
         // propagateSwipe={true}
         avoidKeyboard={true}
@@ -355,6 +431,7 @@ const sendComment = (item) => {
         commentsData.length > 0 ?
     <ScrollView>
       {  commentsData?.map((item) => {
+        console.log('item?.comment', item)
           return(
             <>
             <View style={{marginBottom: scale(10),flexDirection: 'row',paddingVertical:5}}>
@@ -406,7 +483,7 @@ const sendComment = (item) => {
                   paddingVertical: verticalScale(5),
                   fontFamily: Font.OpenSans400
                   }}>
-                  {item?.comment}
+                  {item?.remark}
                 </Text>
               </View>
             </View>

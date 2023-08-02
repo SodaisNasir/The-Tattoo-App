@@ -12,6 +12,7 @@ import AddTatto from '../../Screens/Common/AddTatto'
 import EditProfile from '../../Screens/Common/EditProfile'
 import Home from '../../Screens/Common/Home'
 import Profile from '../../Screens/Common/Profile'
+import FullScreenImage from '../../Screens/FullScreenImage'
 
 const Tab = createBottomTabNavigator()
 
@@ -110,6 +111,14 @@ function AllHome() {
     </Stack.Navigator>
   )
 }
+// function AllAddTatto() {
+//   return (
+//     <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='home'>
+//       <Stack.Screen name="AddTatto" component={AddTatto} />
+//       <Stack.Screen name="RandomProfile" component={RandomProfile} />
+//     </Stack.Navigator>
+//   )
+// }
 
 function AllSetting() {
   return (

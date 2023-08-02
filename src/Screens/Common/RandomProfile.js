@@ -92,16 +92,33 @@ const RandomProfile = ({route,navigation}) => {
         </View>
         :
       <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{
+            height: scale(34),
+            width: scale(34),
+            borderRadius: 100,
+            backgroundColor: 'white',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            top: scale(20),
+            left: scale(20),
+            zIndex: 999,
+        }}>
+      {/* <FontAwesome5 name="angle-left" size={25} color={'black'} /> */}
+        </View>
         <View style={styles.ProContainer}>
-          <BackArrow
+        
+        
+        
+          {/* <BackArrow
             onPress={() => navigation.goBack()}
             restyle={{
               position: 'absolute',
               top: scale(20),
               left: scale(20),
-              zIndex: 10,
+              zIndex: 999,
             }}
-          />
+          /> */}
            <Image 
           resizeMode='cover'
           style={{

@@ -20,6 +20,7 @@ import { Register, VerifyEmailBR } from '../../redux/actions/AuthActions'
 import { useDispatch } from 'react-redux'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 import Loader from '../../Components/Modal/LoaderModal'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const SignUp = ({navigation,route}) => {
   const dispatch = useDispatch()
@@ -118,7 +119,7 @@ const SignUp = ({navigation,route}) => {
 
   return (
     <SafeAreaView style={styles.MainContainer}>
-    <BackArrow onPress={() => navigation.goBack()} />
+     <BackArrwBtn onPress={() => navigation.goBack()}/>
     <Loader
    onBackdropPress={() => setLoader(false)}
    isVisible={loader}

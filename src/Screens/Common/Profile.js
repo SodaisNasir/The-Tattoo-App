@@ -13,14 +13,15 @@ import BackArrow from '../../Components/BackArrow'
 import CustomButton from '../../Components/CustomButton'
 import Top2navigator from '../../Components/Top2bar'
 import { useFocusEffect } from '@react-navigation/native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { base_image_Url } from '../../Utils/BaseUrl'
 import YourTatto from './YourTatto'
 import OthersTatto from './OthersTatto'
 import { Font } from '../../Assets/Fonts/Font'
-import { getRandomProfile } from '../../redux/actions/UserActions'
+import { getAllLikedTatto, getAllTatto, getRandomProfile } from '../../redux/actions/UserActions'
 
 const Profile = ({navigation}) => {
+  const dispatch = useDispatch()
     const userData = useSelector(state => state.user_details)
 
     const [btn1, setBtn1] = useState(true)
@@ -30,10 +31,14 @@ const Profile = ({navigation}) => {
     const [profileData, setProfileData] = useState([])
     const [isLoading, setIsLoading] = useState(true);
 
+
+
     useFocusEffect(
       useCallback(() => {
         navigation.getParent()?.setOptions({tabBarStyle: {display: 'none'}});
         getRandomProfile(userData.data.id,setProfileData,setIsLoading)
+        dispatch(getAllTatto())
+        dispatch(getAllLikedTatto())
       }, []),
     );
     const AllOne = () => {
@@ -123,7 +128,7 @@ const Profile = ({navigation}) => {
           </View>
           <View style={[styles.Box1, {marginLeft: scale(5)}]}>
             <Text style={styles.BoxexNum}>{profileData?.total_like}</Text>
-            <Text style={styles.BoxesText1}>Thumbs Ups</Text>
+            <Text style={styles.BoxesText1}>Thumbs Up</Text>
           </View>
         </View>
 
@@ -138,7 +143,7 @@ const Profile = ({navigation}) => {
               backgroundColor: btn1 ? '#05BC03' : '#D7D7D7',
             }}
             Credit={CreditTwo}
-            NameTwo={'others'}
+            NameTwo={'Liked Tattoos'}
             CreditText={{
               color: btn2 ? 'white' : '#05BC03',
             }}

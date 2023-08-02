@@ -187,7 +187,7 @@ const device = Platform.OS
             justifyContent: 'center',
             marginTop: scale(10),
           }}>
-          <Text style={styles.SignUpText1}>Don,t have an account?</Text>
+          <Text style={styles.SignUpText1}>Don't have an Account?</Text>
           <TouchableOpacity onPress={() => navigation.navigate('accountype',{userData: null})}>
             <Text style={styles.SignUpText}>sign up</Text>
           </TouchableOpacity>

@@ -19,6 +19,7 @@ import Loader from '../../Components/Modal/LoaderModal'
 import TickModal from '../../Components/Modal/TickModal'
 import Validation from '../../Components/Validation'
 import IncorrectModal from '../../Components/Modal/IncorrectModal'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const ChangePass = ({navigation}) => {
   const dispatch = useDispatch()
@@ -49,9 +50,11 @@ ChnagePasrwd(data,navigation,userData,setLoader,setCheck,setCheck2)
   return (
     <SafeAreaView style={styles.MainContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
-      <BackArrow onPress={() => navigation.goBack()} />
+      <BackArrwBtn onPress={() => navigation.goBack()} reStyle={{
+        marginBottom:scale(10)
+       }}/>
         <Text style={styles.Texts}>Change Password</Text>
-        <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem</Text>
+        {/* <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem</Text> */}
 
         <CustomInput
           InputUText="Current Password"

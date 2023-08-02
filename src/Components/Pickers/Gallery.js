@@ -8,7 +8,11 @@ import { Font } from '../../Assets/Fonts/Font'
 const Gallery = ({saveImage6, setSaveImage6}) => {
 
   const [proimg, setproimg] = useState(true)
-
+  const [saveImage,setSaveImage] = useState({})
+  const [saveImage2,setSaveImage2] = useState({})
+  const [saveImage3,setSaveImage3] = useState({})
+  const [saveImage4,setSaveImage4] = useState({})
+  const [saveImage5,setSaveImage5] = useState({})
 
   const filessave = () => {
     let options = {
@@ -17,7 +21,6 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
         path: 'image',
         includeExtra: true,
       },
-      selectionLimit: 5,
     }
 
     launchImageLibrary(options, (res) => {
@@ -30,18 +33,185 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
         // console.log('User tapped custom button: ', res.customButton)
         alert(res.customButton)
       } else {
-        const images = res.assets.map(e => ({uri: e.uri,name: e.fileName,type: e.type})).slice(0, 5);
-
-        if (saveImage6.length < 5){
-          saveImage6.length  ? setSaveImage6([...saveImage6, ...images]) : setSaveImage6(images)
-        } else {
-          const stateCopy = [...saveImage6];
-          stateCopy.splice(stateCopy.length - images.length, images.length)
-          setSaveImage6([...stateCopy, ...images])
+        setSaveImage({
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        })
+        let sample = [saveImage, saveImage2, saveImage3, saveImage4, saveImage5]
+        sample[0] = {
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
         }
+        setSaveImage6(sample)
+        // const images = res.assets.map(e => ({uri: e.uri,name: e.fileName,type: e.type})).slice(0, 5);
+        // if (saveImage6.length < 5){
+        //   saveImage6.length  ? setSaveImage6([...saveImage6, ...images]) : setSaveImage6(images)
+        // } else {
+        //   const stateCopy = [...saveImage6];
+        //   stateCopy.splice(stateCopy.length - images.length, images.length)
+        //   setSaveImage6([...stateCopy, ...images])
+        // }
       }
     })
   }
+  const filessave2 = () => {
+    let options = {
+      storageOptions: {
+        mediaType: 'photo',
+        path: 'image',
+        includeExtra: true,
+      },
+      // selectionLimit: 5,
+    }
+
+    launchImageLibrary(options, (res) => {
+      // console.log(res)
+      if (res.didCancel) {
+        // console.log('User cancelled image picker')
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error)
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton)
+        alert(res.customButton)
+      } else {
+        setSaveImage2({
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        })
+        let sample = [saveImage, saveImage2, saveImage3, saveImage4, saveImage5]
+        sample[1] = {
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        }
+        setSaveImage6(sample)
+        // const images = res.assets.map(e => ({uri: e.uri,name: e.fileName,type: e.type})).slice(0, 5);
+
+        // if (saveImage6.length < 5){
+        //   saveImage6.length  ? setSaveImage6([...saveImage6, ...images]) : setSaveImage6(images)
+        // } else {
+        //   const stateCopy = [...saveImage6];
+        //   stateCopy.splice(stateCopy.length - images.length, images.length)
+        //   setSaveImage6([...stateCopy, ...images])
+        // }
+      }
+    })
+  }
+  const filessave3 = () => {
+    let options = {
+      storageOptions: {
+        mediaType: 'photo',
+        path: 'image',
+        includeExtra: true,
+      },
+    }
+
+    launchImageLibrary(options, (res) => {
+      // console.log(res)
+      if (res.didCancel) {
+        // console.log('User cancelled image picker')
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error)
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton)
+        alert(res.customButton)
+      } else {
+        setSaveImage3({
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        })
+        let sample = [saveImage, saveImage2, saveImage3, saveImage4, saveImage5]
+        sample[2] = {
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        }
+        setSaveImage6(sample)
+        // const images = res.assets.map(e => ({uri: e.uri,name: e.fileName,type: e.type})).slice(0, 5);
+
+        // if (saveImage6.length < 5){
+        //   saveImage6.length  ? setSaveImage6([...saveImage6, ...images]) : setSaveImage6(images)
+        // } else {
+        //   const stateCopy = [...saveImage6];
+        //   stateCopy.splice(stateCopy.length - images.length, images.length)
+        //   setSaveImage6([...stateCopy, ...images])
+        // }
+      }
+    })
+  }
+  const filessave4 = () => {
+    let options = {
+      storageOptions: {
+        mediaType: 'photo',
+        path: 'image',
+        includeExtra: true,
+      },
+    }
+
+    launchImageLibrary(options, (res) => {
+      // console.log(res)
+      if (res.didCancel) {
+        // console.log('User cancelled image picker')
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error)
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton)
+        alert(res.customButton)
+      } else {
+        setSaveImage4({
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        })
+        let sample = [saveImage, saveImage2, saveImage3, saveImage4, saveImage5]
+        sample[3] = {
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        }
+        setSaveImage6(sample)
+      }
+    })
+  }
+  const filessave5 = () => {
+    let options = {
+      storageOptions: {
+        mediaType: 'photo',
+        path: 'image',
+        includeExtra: true,
+      },
+    }
+
+    launchImageLibrary(options, (res) => {
+      // console.log(res)
+      if (res.didCancel) {
+        // console.log('User cancelled image picker')
+      } else if (res.error) {
+        // console.log('ImagePicker Error: ', res.error)
+      } else if (res.customButton) {
+        // console.log('User tapped custom button: ', res.customButton)
+        alert(res.customButton)
+      } else {
+        setSaveImage5({
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        })
+        let sample = [saveImage, saveImage2, saveImage3, saveImage4, saveImage5]
+        sample[4] = {
+          name: res.assets?.[0]?.fileName,
+          uri: res.assets?.[0]?.uri,
+          type: res.assets?.[0]?.type,
+        }
+        setSaveImage6(sample)
+      }
+    })
+  }
+  
 
   const emptyImage = () => {
     filessave()
@@ -50,8 +220,8 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
 
   return (
     <>
-      <TouchableOpacity onPress={emptyImage} style={styles.SelectBox}>
-        {proimg ? (
+      <TouchableOpacity onPress={() => filessave()} style={styles.SelectBox}>
+        {!saveImage?.uri ? (
           <View
             style={{
               justifyContent: 'center',
@@ -68,59 +238,72 @@ const Gallery = ({saveImage6, setSaveImage6}) => {
           <Image
             style={styles.UserImage}
             resizeMode="contain"
-            source={{uri: saveImage6[0]?.uri}}
+            source={{uri: saveImage?.uri}}
           />
         )}
       </TouchableOpacity>
 
       <View style={styles.FourCon}>
+        <TouchableOpacity onPress={() => filessave2()}>
         <View style={styles.FourBoxes}>
-          {proimg ? (
+          {!saveImage2?.uri ? (
             <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 2</Text>
           ) : (
             <>
               <Image
                 style={styles.UserImage}
                 resizeMode="contain"
-                source={{uri: saveImage6[1]?.uri}}
+                source={{uri: saveImage2?.uri}}
               />
             
             </>
           )}
         </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => filessave3()}>
         <View style={styles.FourBoxes}>
-          {proimg ? (
+          {!saveImage3?.uri ? (
             <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 3</Text>
           ) : (
             <Image
               style={styles.UserImage}
               resizeMode="contain"
-              source={{uri: saveImage6[2]?.uri}}
+              source={{uri: saveImage3?.uri}}
             />
           )}
         </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => filessave4()}>
+
         <View style={styles.FourBoxes}>
-          {proimg ? (
+          {!saveImage4?.uri ? (
             <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 4</Text>
           ) : (
             <Image
               style={styles.UserImage}
               resizeMode="contain"
-              source={{uri: saveImage6[3]?.uri}}
+              source={{uri: saveImage4?.uri}}
             />
           )}
         </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => filessave5()}>
+
         <View style={styles.FourBoxes}>
-          {proimg ? (
+          {!saveImage5?.uri ? (
             <Text style={{color: 'grey',fontFamily: Font.OpenSans400}}>no: 5</Text>
           ) : (
             <Image
               style={styles.UserImage}
               resizeMode="contain"
-              source={{uri: saveImage6[4]?.uri}}
+              source={{uri: saveImage5?.uri}}
             />
           )}
         </View>
+        </TouchableOpacity>
       </View>
     </>
   )

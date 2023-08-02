@@ -8,6 +8,7 @@ export const SKINTONES = 'SKINTONES'
 export const ALLCREATORS = 'ALLCREATORS'
 export const ALLUSERS = 'ALLUSERS'
 export const RANDOMPROFILE = 'RANDOMPROFILE'
+export const LIKED_TATTO = 'LIKED_TATTO'
 
 const initial_state = {
   user_details: null,
@@ -19,6 +20,7 @@ const initial_state = {
   skintones: [],
   allcreators: [],
   allusers: [],
+  liked_tatto: [],
   randomprofile: null,
 }
 
@@ -70,6 +72,11 @@ const holderReducer = (state = initial_state, action) => {
         return {
           ...state,
           randomprofile: action.payload,
+        }
+      case LIKED_TATTO:
+        return {
+          ...state,
+          liked_tatto: action.payload,
         }
     default: {
       return state

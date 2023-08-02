@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   TextInput,
+  StatusBar,
 } from 'react-native'
 import StaggeredList from '@mindinventory/react-native-stagger-view'
 import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
@@ -20,10 +21,10 @@ import CustomInput from '../../Components/CustomInput'
 import {useForm} from 'react-hook-form'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Entypo from 'react-native-vector-icons/Entypo'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native'
-import { getAllTatto, getCommentsByID, getCreators, getRandomProfile, getSkinTone, getSkinTones, getUsers, likedByID, send_Comments } from '../../redux/actions/UserActions'
+import { getAllLikedTatto, getAllTatto, getCommentsByID, getCreators, getRandomProfile, getSkinTone, getSkinTones, getUsers, likedByID, send_Comments } from '../../redux/actions/UserActions'
 import { base_Url, base_image_Url } from '../../Utils/BaseUrl'
 import Modal from 'react-native-modal'
 import SearchInput from '../../Components/SearchInput'
@@ -48,6 +49,7 @@ const Home = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [commentsData, setCommentsData] = useState([]);
+  console.log('data', data)
   // const scrollViewRef = useRef()
 
   // useEffect(() => {
@@ -60,15 +62,6 @@ const Home = ({navigation}) => {
     reset,
     formState: {errors, isValid},
   } = useForm({mode: 'all'})
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getAllTatto())
-      dispatch(getSkinTones())
-      dispatch(getCreators())
-      dispatch(getUsers())
-    },[isLike])
-  )
 
 
   const getChildrenStyle = () => {
@@ -113,9 +106,11 @@ const Home = ({navigation}) => {
     setChooseColor(false)
   }
 const refrshView =  () => {
-      dispatch(getAllTatto())
-      dispatch(getSkinTones())
-      dispatch(getCreators())
+  dispatch(getAllTatto())
+  dispatch(getAllLikedTatto())
+  dispatch(getSkinTones())
+  dispatch(getCreators())
+  dispatch(getUsers())
       setSkinTone([])
 }
 
@@ -134,20 +129,32 @@ const handleSearch = text2 => {
   setSearchQuery(text2);
 };
 const likePost = (id) => {
+  dispatch(getAllTatto())
+  dispatch(getAllLikedTatto())
+  dispatch(getSkinTones())
+  dispatch(getCreators())
+  dispatch(getUsers())
   likedByID(id)
   setIsLike(!isLike)
 }
 const commnetsModal = () => {
   setModalVisible3(true)
 }
-
 const sendComment = (item) => {
   send_Comments(item,data.id,reset)
   setTimeout(() => {
     getCommentsByID(data.id,setCommentsData)
   }, 1000);
 }
+const closeModal = () =>{
+  dispatch(getAllTatto())
+  dispatch(getAllLikedTatto())
+  setModalVisible(false)
+  setIsLike(false)
+}
   return (
+    <>
+    <StatusBar backgroundColor={'black'} barStyle={'light-content'} />
     <SafeAreaView style={styles.MainContainer}>
     <View style={{
       // height: 100,
@@ -318,13 +325,30 @@ const sendComment = (item) => {
     </Modal>
 
     <Modal
-      onBackdropPress={() => (setModalVisible(false),setIsLike(false))}
+      onBackdropPress={() => closeModal()}
       animationType="slide"
       // transparent={true}
       visible={modalVisible}
       style={{margin:0,backgroundColor: 'rgba(0,0,0,1)'}}
       >
-    <View style={{flex: 0.8,marginHorizontal: scale(15)}}>
+    <View style={{flex: 1,marginHorizontal: scale(15)}}>
+      <View style={{
+        height: '10%',
+        justifyContent: 'center'
+      }}>
+        <TouchableOpacity onPress={() => closeModal()}>
+        <View style={{
+          height: scale(35),
+          width: scale(35),
+          // backgroundColor: 'white',
+          borderRadius:100,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+           <FontAwesome5 name="angle-left" size={25} color={'white'} />
+        </View>
+          </TouchableOpacity>
+      </View>
       <ScrollView>
         <View style={{
           height: verticalScale(40),
@@ -395,7 +419,7 @@ const sendComment = (item) => {
         }}>
            <TouchableOpacity onPress={() => likePost(data.id)}>
             <AntDesign
-              name={data.like_status == 1 ? 'like1' : isLike ? 'like1' : 'like2'}
+              name={data.like_status == 0 && isLike  ? 'like1' : data.like_status == 1 && !isLike ? 'like1' : 'like2'}
               size={scale(20)}
               color={'white'}
             />
@@ -406,8 +430,9 @@ const sendComment = (item) => {
               fontFamily: Font.OpenSans700,
               color: 'white',
               paddingLeft: scale(5),
-            }}>
-             {isLike ? parseInt(data?.like) + 1 : data?.like} Likes
+            }}
+            >
+             {data.like_status == 0 && isLike ? parseInt(data?.like) + 1 : data.like_status == 1 && isLike ? parseInt(data?.like) - 1 : data?.like} Likes
           </Text>
           <TouchableOpacity
             onPress={() => commnetsModal()}
@@ -458,6 +483,7 @@ const sendComment = (item) => {
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {
               images?.map((item,index) => {
+                console.log('item', item)
                 return(
                   <>
                   <TouchableOpacity onPress={() => setSelectImage(item)}>
@@ -497,7 +523,8 @@ const sendComment = (item) => {
                 fontFamily: Font.OpenSans400,
               }}>
               {/* 1 Day ago */}
-              {moment(data?.created_at).fromNow()}
+              {data?.time}
+              {/* {moment(data?.created_at).fromNow()} */}
             </Text>
           </View>
                   </TouchableOpacity>
@@ -507,6 +534,7 @@ const sendComment = (item) => {
             }
             {
               data?.images?.map((item,index) => {
+                console.log('item', item)
                 return(
                   <>
                   <TouchableOpacity onPress={() => setSelectImage(item.image)}>
@@ -546,7 +574,8 @@ const sendComment = (item) => {
                 fontFamily: Font.OpenSans400,
               }}>
               {/* 1 Day ago */}
-              {moment(item?.created_at).fromNow()}
+              {item?.time}
+              {/* {moment(item?.created_at).fromNow()} */}
             </Text>
           </View>
                   </TouchableOpacity>
@@ -568,7 +597,7 @@ const sendComment = (item) => {
           justifyContent: 'flex-end'
         }}
         isVisible={modalVisible3}
-        onBackdropPress={() => (setModalVisible3(false),setCommentsData([]))}
+        onBackdropPress={() => (setModalVisible3(false))}
         // swipeDirection="down"
         // propagateSwipe={true}
         avoidKeyboard={true}
@@ -637,7 +666,7 @@ const sendComment = (item) => {
                   paddingVertical: verticalScale(5),
                   fontFamily: Font.OpenSans400
                   }}>
-                  {item?.comment}
+                  {item?.remark}
                 </Text>
               </View>
             </View>
@@ -680,7 +709,8 @@ const sendComment = (item) => {
   </View>
       </View>
     </Modal>
-  </SafeAreaView>
+    </SafeAreaView>
+    </>
   )
 }
 

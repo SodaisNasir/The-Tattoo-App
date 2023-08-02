@@ -12,6 +12,7 @@ import {moderateScale, scale, verticalScale} from 'react-native-size-matters'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import BackArrow from '../../Components/BackArrow'
 import CustomButton from '../../Components/CustomButton'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const AccountType = ({navigation,route}) => {
   const {UserData} = route.params
@@ -44,7 +45,7 @@ const AccountType = ({navigation,route}) => {
   return (
     <SafeAreaView style={styles.MainContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <BackArrow onPress={() => navigation.goBack()} />
+      <BackArrwBtn onPress={() => navigation.goBack()}/>
         <View style={styles.ImgContainer}>
           <Image
             style={{height: scale(200)}}
@@ -54,7 +55,7 @@ const AccountType = ({navigation,route}) => {
         </View>
 
         <Text style={styles.firstText}>Account type</Text>
-        <Text style={styles.Stext}>Lorem ipsemLorem ipsem Lorem</Text>
+        {/* <Text style={styles.Stext}>Lorem ipsemLorem ipsem Lorem</Text> */}
 
         <View style={styles.BoxContainer}>
 

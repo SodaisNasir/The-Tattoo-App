@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Register, VerifyEmailBP, VerifyEmailBR } from '../../redux/actions/AuthActions'
 import Loader from '../../Components/Modal/LoaderModal'
 import IncorrectModal from '../../Components/Modal/IncorrectModal'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const Otp = ({navigation,route}) => {
   const dispatch = useDispatch()
@@ -73,10 +74,10 @@ const device = Platform.OS
   }
   return (
     <SafeAreaView style={styles.MainContainer}>
-      <BackArrow onPress={() => navigation.goBack()} />
+        <BackArrwBtn onPress={() => navigation.goBack()}/>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.Texts}>Enter The OTP</Text>
-        <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem {otp}</Text>
+        <Text style={styles.Texts1}>{otp}</Text>
 
         <CustomInput
           name="otp"

@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import OneSignal from 'react-native-onesignal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ROLE_ID, USER_DETAILS } from './src/redux/reducer/Holder'
+import { getAllLikedTatto, getAllTatto, getCreators, getSkinTones, getUsers } from './src/redux/actions/UserActions'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -18,9 +19,14 @@ const App = () => {
 
   useEffect(() => {
     getuserData()
+    dispatch(getAllTatto())
+    dispatch(getAllLikedTatto())
+    dispatch(getSkinTones())
+    dispatch(getCreators())
+    dispatch(getUsers())
     setTimeout(() => {
       SplashScreen.hide();
-    }, 2000);
+    }, 3000);
     OneSignal.setAppId('6e734850-e8f5-4421-95ec-de6767b80e8d')
     OneSignal.promptForPushNotificationsWithUserResponse()
     OneSignal.setNotificationWillShowInForegroundHandler(

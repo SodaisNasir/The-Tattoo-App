@@ -16,6 +16,7 @@ import {
 import {scale, verticalScale} from 'react-native-size-matters'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
+import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { addImageAfter, getCommentsByID, getMyTattos, getRandomProfile, likedByID, send_Comments } from '../../redux/actions/UserActions'
@@ -26,6 +27,8 @@ import Modal from 'react-native-modal'
 import { useForm } from 'react-hook-form'
 import { Font } from '../../Assets/Fonts/Font'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
+import { SelectList } from 'react-native-dropdown-select-list'
+import CustomButton from '../../Components/CustomButton'
 
 const YourTatto = () => {
     const [isLike, setIsLike] = useState(false)
@@ -39,7 +42,19 @@ const YourTatto = () => {
     const [isLoading2, setIsLoading2] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false)
     const [show2, setShow2] = useState(true)
+    const [saveIMage, setSaveImage] = useState({})
     const [tattoId, setTattoId] = useState()
+    const [selectDate,setSelectDate] = useState()
+    const [date,setdate] = useState([
+      {label: 'Just done', value: 'Just done'},
+      {label: '1 week', value: '1 week'},
+      {label: '1 month', value: '1 month'},
+      {label: '2 months', value: '2 months'},
+      {label: '1 year', value: '1 year'},
+      {label: '2 years', value: '2 years'},
+      {label: '3 years', value: '3 years'},
+      {label: '5+ years', value: '5+ years'},
+    ])
 
     const {
         control,
@@ -98,23 +113,24 @@ const YourTatto = () => {
             // console.log('User tapped custom button: ', res.customButton)
             alert(res.customButton)
           } else {
-            setModalVisible(false)
-            addImageAfter(
-              {
-                name: res.assets?.[0]?.fileName,
-                uri: res.assets?.[0]?.uri,
-                type: res.assets?.[0]?.type,
-              },
-              tattoId,
-              setIsLoading2,
-              ToastAndroid
-            )
-            // setsaveimage({
-            //   name: res.assets?.[0]?.fileName,
-            //   uri: res.assets?.[0]?.uri,
-            //   type: res.assets?.[0]?.type,
-            // })
-            setShow2(false)
+            // setModalVisible(false)
+            setSaveImage({
+              name: res.assets?.[0]?.fileName,
+              uri: res.assets?.[0]?.uri,
+              type: res.assets?.[0]?.type,
+            })
+            // addImageAfter(
+            //   {
+            //     name: res.assets?.[0]?.fileName,
+            //     uri: res.assets?.[0]?.uri,
+            //     type: res.assets?.[0]?.type,
+            //   },
+            //   tattoId,
+            //   setIsLoading2,
+            //   ToastAndroid
+            // )
+
+            // setShow2(false)
           }
         })
       }
@@ -135,23 +151,28 @@ const YourTatto = () => {
             console.log('User tapped custom button: ', res.customButton)
             alert(res.customButton)
           } else {
-            setModalVisible(false)
-            addImageAfter(
-              {
-                name: res.assets?.[0]?.fileName,
-                uri: res.assets?.[0]?.uri,
-                type: res.assets?.[0]?.type,
-              },
-              tattoId,
-              setIsLoading2,
-              ToastAndroid
-            )
+            // setModalVisible(false)
+            setSaveImage({
+              name: res.assets?.[0]?.fileName,
+              uri: res.assets?.[0]?.uri,
+              type: res.assets?.[0]?.type,
+            })
+            // addImageAfter(
+            //   {
+            //     name: res.assets?.[0]?.fileName,
+            //     uri: res.assets?.[0]?.uri,
+            //     type: res.assets?.[0]?.type,
+            //   },
+            //   tattoId,
+            //   setIsLoading2,
+            //   ToastAndroid
+            // )
             // setsaveimage({
             //   name: res.assets?.[0]?.fileName,
             //   uri: res.assets?.[0]?.uri,
             //   type: res.assets?.[0]?.type,
             // })
-            setShow2(false)
+            // setShow2(false)
           }
         })
       }
@@ -166,6 +187,7 @@ const YourTatto = () => {
     }
     const renderItem = ({item}) => {
         const cnvrtData = JSON.parse(item.image)
+        console.log('item', item)
         return (
           <View style={styles.CardContainer}>
             <View style={styles.NameContainer}>
@@ -207,7 +229,7 @@ const YourTatto = () => {
                   <ActivityIndicator size={scale(20)} color={'white'} />
                   :
                 <TouchableOpacity onPress={() => requestCameraPermission(item.id)}>
-              <MaterialCommunityIcons name="square-edit-outline" size={24} color="black" />
+              <Entypo name="plus" size={scale(20)} color="black" />
                 </TouchableOpacity>
                 }
               </View>
@@ -235,7 +257,9 @@ const YourTatto = () => {
                     color={'black'}
                   />
                 </TouchableOpacity>
-                <Text style={styles.LikeCount}>{select.includes(item.id) ? parseInt(item.like) + 1 : item.like} Likes</Text>
+                <Text style={styles.LikeCount}>{
+                  (item.like_status == 0 && !select.includes(item.id)) || (item.like_status == 1 &&  !select.includes(item.id)) ? item.like : item.like_status == 0 &&  select.includes(item.id) ? parseInt(item.like) + 1 : item.like
+                } Likes</Text>
                 <TouchableOpacity
                 onPress={() => commnetsModal(item.id)}
                   style={{
@@ -298,6 +322,19 @@ const YourTatto = () => {
           getCommentsByID(cmmntId,setCommentsData)
         }, 1000);
     }
+    const updatedPost = () => {
+      if(selectDate && saveIMage?.uri){
+        addImageAfter(
+          saveIMage,
+          tattoId,
+          setIsLoading2,
+          ToastAndroid,
+          selectDate
+          )
+        }else{
+          alert('Please select date and tattoo')
+        }
+    }
   return (
     <SafeAreaView style={styles.MainContainer}>
         <FlatList
@@ -313,13 +350,13 @@ const YourTatto = () => {
           )}
         />
 
-<Modal
+          <Modal
           backdropOpacity={0.2}
           onBackdropPress={() => setModalVisible(false)}
           isVisible={isModalVisible}
           style={{
             margin: 0,
-            justifyContent: 'flex-end'
+            justifyContent: 'center'
           }}
           >
           {/* <View
@@ -330,6 +367,53 @@ const YourTatto = () => {
           
             }}> */}
             <View style={styles.SecCon}>
+              <View style={{flex:2,marginHorizontal:scale(20),paddingTop: scale(15)}}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View 
+  
+              >
+            <Text style={{color: 'Black',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>Add time</Text>
+            <SelectList
+              placeholder="Select time"
+              arrowicon={
+                <Entypo
+                  name="chevron-down"
+                  size={scale(18)}
+                  color={'white'}
+                />
+              }
+              closeicon={
+                <Entypo
+                  name="chevron-up"
+                  size={scale(18)}
+                  color={'white'}
+                />
+              }
+              dropdownStyles={styles.dropdownStyles}
+              dropdownItemStyles={styles.dropdownItemStyles}
+              boxStyles={styles.boxStyles}
+              dropdownTextStyles={styles.dropdownTextStyles}
+              inputStyles={styles.inputStyles}
+              search={false}
+              setSelected={val => setSelectDate(val)}
+              data={date}
+              save="value"
+            />
+              </View>
+
+              <CustomButton
+                onPress={() => updatedPost()}
+                Textalig={{
+                  color: 'white',
+                  fontSize: 18,
+                }}
+                text={'Update'}
+                // btnLoader={btnLoader}
+                />
+
+            </ScrollView>
+              </View>
+              <View style={{flex:0.5,flexDirection: 'row'}}>
               <TouchableOpacity
                 onPress={() => photosave()}
                 style={styles.ModalBtn}>
@@ -350,9 +434,11 @@ const YourTatto = () => {
                <Feather name="camera" size={24} color="black" />
                 <Text style={styles.Text1}>Take a picture</Text>
               </TouchableOpacity>
+              </View>
             </View>
           {/* </View> */}
         </Modal>
+
          <Modal 
      backdropOpacity={0.4}
         animationType="slide"
@@ -379,6 +465,7 @@ const YourTatto = () => {
     <ScrollView >
       {
         commentsData?.map((item) => {
+          console.log('item', commentsData)
           return(
             <>
             <View style={{marginBottom: scale(10),flexDirection: 'row',paddingVertical:5}}>
@@ -416,7 +503,7 @@ const YourTatto = () => {
                   fontSize: scale(12),
                   paddingVertical: verticalScale(5)
                   }}>
-                  {item?.comment}
+                  {item?.remark}
                 </Text>
               </View>
             </View>
@@ -462,6 +549,7 @@ const styles = StyleSheet.create({
       backgroundColor: 'black',
       paddingHorizontal: scale(20),
       // paddingTop: scale(20),
+      
     },
     CardContainer: {
       height: scale(250),
@@ -582,12 +670,13 @@ const styles = StyleSheet.create({
       fontFamily: Font.Mulish600,
     },
     SecCon: {
-      height: verticalScale(50),
+      height: verticalScale(350),
       width: '100%',
       backgroundColor: 'white',
-      borderTopLeftRadius: 15,
-      borderTopRightRadius: 15,
-      flexDirection: 'row',
+      // borderTopLeftRadius: 15,
+      // borderTopRightRadius: 15,
+      borderRadius:12,
+      // flexDirection: 'row',
       overflow: 'hidden',
     },
     tinyLogo: {
@@ -597,6 +686,37 @@ const styles = StyleSheet.create({
     tinyLogo2: {
       height: verticalScale(22),
       width: scale(25),
+    },
+    boxStyles: {
+      backgroundColor: 'white',
+      height: verticalScale(55),
+      alignItems: 'center',
+      borderRadius: 8,
+      // borderTopRightRadius:12,
+      // borderTopLeftRadius:12,
+      // marginTop: verticalScale(20),
+    },
+    inputStyles: {
+      color: 'black',
+      fontSize: scale(13),
+      fontFamily: Font.OpenSans400
+      // fontFamily: Font.Gilroy500,
+    },
+    dropdownTextStyles: {
+      color: 'black',
+      fontFamily: Font.OpenSans400
+    },
+    dropdownItemStyles: {
+      backgroundColor: 'white',
+    },
+    dropdownStyles: {
+      backgroundColor: 'white',
+      borderWidth: scale(1),
+      borderColor: 'white',
+      bottom:10,
+      borderRadius: 0,
+      borderBottomRightRadius:12,
+      borderBottomLeftRadius:12,
     },
   })
 export default YourTatto

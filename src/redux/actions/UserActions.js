@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA, ALLTATTO, SKINTONES, ALLCREATORS, ALLUSERS, RANDOMPROFILE} from '../reducer/Holder'
+import {USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA, ALLTATTO, SKINTONES, ALLCREATORS, ALLUSERS, RANDOMPROFILE, LIKED_TATTO} from '../reducer/Holder'
 import {
   GoogleSignin,
   statusCodes,
@@ -25,7 +25,7 @@ export const getAllTatto = () => {
       }
             
         } catch (error) {
-            console.log('error', error)
+            console.log('getAllTatto error', error)
         }
     }
 }
@@ -89,18 +89,20 @@ export const getUsers = () => {
       }
   }
 }
-export const submitTattoEntry = async (selectedImages,tag,skin,setLoader,setCheck,navigation) => {
+export const submitTattoEntry = async (selectedImages,tag,skin,setLoader,setCheck,navigation,selectDate) => {
   setLoader(true)
     const  userDetails =  await AsyncStorage.getItem('user_details')
     const cnvrtData = JSON.parse(userDetails)
+    const fltrImage = selectedImages?.filter((item) => item?.uri)
    try {
        let baseUrl = `${base_Url}store-tattoo/${cnvrtData.data.id}`
        let myData = new FormData()
 
        myData.append('tag',tag)
+       myData.append('time',selectDate)
        myData.append('skin_tone',skin)
-       selectedImages.forEach((image, index) => {
-        index < 5 && myData.append(`image[${index + 1}]`, {
+       fltrImage.forEach((image, index) => {
+        index < 5 && myData.append(`image[${index}]`, {
           uri: image.uri,
           type: image.type,
           name: image.name,
@@ -114,6 +116,7 @@ export const submitTattoEntry = async (selectedImages,tag,skin,setLoader,setChec
     })
 
     const responseData = await response.json()
+    console.log('responseData', responseData)
     
     if(responseData?.success?.status === 200){
       setLoader(false)
@@ -244,6 +247,7 @@ export const getSkinTone = async (code,setData) => {
   }
 }
 export const likedByID = async (id) => {
+  console.log('id', id)
   const  userDetails =  await AsyncStorage.getItem('user_details')
   const cnvrtData = JSON.parse(userDetails)
   try {
@@ -280,25 +284,23 @@ export const getCommentsByID = async (id,setData) => {
   }
 }
 export const send_Comments = async (data,id,reset) => {
-  console.log('data', data,id)
+  console.log('data,id', data,id)
     const  userDetails =  await AsyncStorage.getItem('user_details')
     const cnvrtData = JSON.parse(userDetails)
     try {
     let baseUrl = `${base_Url}store-comment/${id}/${cnvrtData.data.id}`
     let myData = new FormData()
 
-    myData.append('comment',data.comment)
+    myData.append('remark',data.comment)
   
     const response = await fetch(baseUrl,{
       method: 'post',
       body: myData
     })
 
-    console.log('response', response)
 
     const responseData = await response.json()
 
-    console.log('send_Comments responseData', responseData)
     if(responseData?.success?.status === 200){
       reset()
     }else{
@@ -380,8 +382,7 @@ return async (dispatch) => {
 }
   
 }
-export const addImageAfter = async (image,id,setIsLoading,ToastAndroid) => {
-  console.log('image', image)
+export const addImageAfter = async (image,id,setIsLoading,ToastAndroid,selectDate) => {
   setIsLoading(true)
   const  userDetails =  await AsyncStorage.getItem('user_details')
   const cnvrtData = JSON.parse(userDetails)
@@ -390,6 +391,7 @@ export const addImageAfter = async (image,id,setIsLoading,ToastAndroid) => {
       let myData = new FormData()
 
       myData.append('image',image)
+      myData.append('time',selectDate)
     
       const response = await fetch(baseUrl,{
         method: 'post',
@@ -411,4 +413,26 @@ export const addImageAfter = async (image,id,setIsLoading,ToastAndroid) => {
       console.log('addImageAfter error', error)
     }
   
+}
+export const getAllLikedTatto = () => {
+  return async (dispatch) => {
+   const  userDetails =  await AsyncStorage.getItem('user_details')
+   const cnvrtData = JSON.parse(userDetails)
+   try {
+       let baseUrl = `${base_Url}show-like-tattoo/${cnvrtData.data.id}`
+
+
+    const response = await fetch(baseUrl,{
+      method: 'get',
+    })
+
+    const responseData = await response.json()
+    if(responseData?.success?.status === 200){
+      dispatch({type: LIKED_TATTO, payload: responseData?.success?.data})
+    }
+          
+      } catch (error) {
+          console.log('getAllLikedTatto error', error)
+      }
+  }
 }

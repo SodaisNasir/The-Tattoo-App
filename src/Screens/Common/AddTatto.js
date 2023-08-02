@@ -27,6 +27,8 @@ import { creatorAddUser, getUsers, submitTattoEntry } from '../../redux/actions/
 import Loader from '../../Components/Modal/LoaderModal'
 import TickModal from '../../Components/Modal/TickModal'
 import { Font } from '../../Assets/Fonts/Font'
+import CusDropDown from '../../Components/CustomDropDown/CusDropDown'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const AddTatto = ({navigation}) => {
   const dispatch = useDispatch()
@@ -45,16 +47,25 @@ const AddTatto = ({navigation}) => {
     const [btnLoader, setBtnLoader] = useState(false);
     const [check, setCheck] = useState(false)
     const [msg, setMsg] = useState('')
-
-
+    const [selectDate,setSelectDate] = useState()
+    const [date,setdate] = useState([
+      {label: 'Just Now', value: 'Just Now'},
+      {label: '1 Week', value: '1 Week'},
+      {label: '1 Month', value: '1 Month'},
+      {label: '2 Months', value: '2 Months'},
+      {label: '1 Year', value: '1 Year'},
+      {label: '2 Years', value: '2 Years'},
+      {label: '3 Years', value: '3 Years'},
+      {label: '4 Years', value: '4 Years'},
+      {label: '5 Years', value: '5 Years'},
+    ])
     const newData = skintones.map((item) => {
         return {label: item.id, value: item.code}
-      })
-      const shooData = userData.data.role_id == 2 ? allusers :  allcreators
+    })
+    const shooData = userData.data.role_id == 2 ? allusers :  allcreators
     const creatos = shooData.map((item) => {
         return {label: item.id, value: item.name}
-      })
-
+    })
     const {
         control,
         handleSubmit,
@@ -82,29 +93,30 @@ const AddTatto = ({navigation}) => {
       dispatch(getUsers())
     }
     const onSubmit = () => {
-        submitTattoEntry(saveImage6,selectCreator,type,setLoader,setCheck,navigation)
+        submitTattoEntry(saveImage6,selectCreator,type,setLoader,setCheck,navigation,selectDate)
     }
 
-
+    
   return (
     <SafeAreaView style={styles.MainContainer}>
+      <BackArrwBtn text={'add new tattoo'} onPress={() => navigation.goBack()}/>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <BackArrow
+        {/* <BackArrow
           onPress={() => navigation.goBack()}
           restyle={{
             marginTop: scale(20),
           }}
         />
-        <Text style={styles.TopText}>add new tattoo</Text>
+        <Text style={styles.TopText}>add new tattoo</Text> */}
 
         <Text style={styles.SelectBoxText}>You can add up to 5 images</Text>
 
         <Gallery   {...{setSaveImage6,saveImage6}}/>
 
         <View style={styles.DropdownBox}>
-            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>Skin Tone</Text>
+            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>Add time</Text>
             <SelectList
-              placeholder="Select tone"
+              placeholder="Select time"
               arrowicon={
                 <Entypo
                   name="chevron-down"
@@ -125,10 +137,17 @@ const AddTatto = ({navigation}) => {
               dropdownTextStyles={styles.dropdownTextStyles}
               inputStyles={styles.inputStyles}
               search={false}
-              setSelected={val => setType(val)}
-              data={newData}
+              setSelected={val => setSelectDate(val)}
+              data={date}
               save="value"
             />
+          </View>
+
+         
+
+        <View style={[styles.DropdownBox,{marginTop:scale(15)}]}>
+            <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>Skin Tone</Text>
+            <CusDropDown setType={setType}/>
           </View>
 
         {/* <Top2navigator
@@ -149,6 +168,7 @@ const AddTatto = ({navigation}) => {
             backgroundColor: btn2 ? '#05BC03' : '#D7D7D7',
           }}
         /> */}
+        
   
           <View style={[styles.DropdownBox,{marginTop:scale(15)}]}>
             <Text style={{color: 'white',paddingLeft: scale(7),bottom:3,fontFamily: Font.OpenSans600}}>{userData.data.role_id == 1? 'Tag creator' :'Tag user'}</Text>
@@ -317,7 +337,7 @@ const AddTatto = ({navigation}) => {
         isVisible={loader}
         /> 
          <TickModal
-          text={'User has been added successfully!'}
+          text={'Tattoo Added Successfully'}
           onPress={() => setCheck(false)}
           onBackdropPress={() => setCheck(false)}
           isVisible={check}

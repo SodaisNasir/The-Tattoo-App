@@ -19,6 +19,8 @@ import { VerifyEmailBP } from '../../redux/actions/AuthActions'
 import Loader from '../../Components/Modal/LoaderModal'
 import IncorrectModal from '../../Components/Modal/IncorrectModal'
 import { Email_Regex } from '../../Utils/BaseUrl'
+import { Font } from '../../Assets/Fonts/Font'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const ForgetPass = ({navigation}) => {
   const dispatch = useDispatch()
@@ -38,14 +40,16 @@ const ForgetPass = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.MainContainer}>
-      <BackArrow onPress={() => navigation.goBack()} />
+       <BackArrwBtn onPress={() => navigation.goBack()} reStyle={{
+        marginBottom:scale(10)
+       }}/>
       <Loader
    onBackdropPress={() => setLoader(false)}
    isVisible={loader}
 /> 
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.Texts}>Forget Password</Text>
-        <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem</Text>
+        <Text style={styles.Texts1}>Please enter the email address associated with your account</Text>
 
         <CustomInput
           InputUText={'Your Email'}
@@ -98,29 +102,25 @@ const styles = StyleSheet.create({
   },
   Texts: {
     color: '#FFF',
-    fontFamily: 'mulish',
+    fontFamily: Font.Mulish700,
     fontSize: moderateScale(24),
     paddingTop: scale(40),
-    fontWeight: '700',
   },
   Texts1: {
     color: '#FFF',
-    fontFamily: 'mulish',
+    fontFamily: Font.Mulish400,
     fontSize: moderateScale(13),
     paddingVertical: scale(10),
+    width: '95%'
   },
   SignUpText1: {
-    fontFamily: 'ABeeZee',
+    fontFamily: Font.ABeeZee400,
     fontSize: moderateScale(13),
-    fontStyle: 'normal',
-    fontWeight: '500',
     color: '#CBC0C0',
   },
   SignUpText: {
-    fontFamily: 'ABeeZee',
+    fontFamily: Font.ABeeZee400,
     fontSize: moderateScale(15),
-    fontStyle: 'normal',
-    fontWeight: '500',
     color: '#05BC03',
     textTransform: 'capitalize',
   },

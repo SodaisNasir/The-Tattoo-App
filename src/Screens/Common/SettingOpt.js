@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 import { editNotification } from '../../redux/actions/UserActions'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 const SettingOpt = ({navigation}) => {
     const dispatch = useDispatch()
     const userData = useSelector((state) => state.user_details)
@@ -34,13 +35,17 @@ const SettingOpt = ({navigation}) => {
     }
   return (
     <SafeAreaView style={styles.MainContainer}>
-    <BackArrow
+       <BackArrwBtn text={'Settings'} onPress={() => navigation.goBack()} reStyle={{
+        paddingHorizontal:scale(20),
+        marginBottom:scale(10)
+       }}/>
+    {/* <BackArrow
       restyle={{
         marginLeft: scale(15),
       }}
       onPress={() => navigation.goBack()}
     />
-    <Text style={styles.Heading}>Settings</Text>
+    <Text style={styles.Heading}>Settings</Text> */}
     
     <View style={styles.ToggleCon}>
 

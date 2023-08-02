@@ -17,6 +17,7 @@ import Loader from '../../Components/Modal/LoaderModal'
 import { ResetPassword } from '../../redux/actions/AuthActions'
 import Validation from '../../Components/Validation'
 import TickModal from '../../Components/Modal/TickModal'
+import BackArrwBtn from '../../Components/BackArrow/BackArrwBtn'
 
 const ResetPass = ({navigation,route}) => {
   const {id} = route.params
@@ -41,7 +42,7 @@ const ResetPass = ({navigation,route}) => {
 
   return (
     <SafeAreaView style={styles.MainContainer}>
-      <BackArrow onPress={() => navigation.goBack()} />
+     <BackArrwBtn onPress={() => navigation.goBack()}/>
       <Loader
         onBackdropPress={() => setLoader(false)}
         isVisible={loader}
@@ -54,7 +55,7 @@ const ResetPass = ({navigation,route}) => {
         />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.Texts}>Reset Password</Text>
-        <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem</Text>
+        {/* <Text style={styles.Texts1}>Lorem ispemLorem ispem Lorem ispem</Text> */}
 
         <CustomInput
           name="password"
