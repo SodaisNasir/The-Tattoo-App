@@ -1,38 +1,39 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA} from '../reducer/Holder'
+import { USER_DETAILS, IS_SIGN_IN, OTP, ROLE_ID, SOCIAL_DATA } from '../reducer/Holder'
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 import { base_Url } from '../../Utils/BaseUrl';
 
-export const sign_in = (data,setLoader,device,setCheck) => {
+export const sign_in = (data, setLoader, device, setCheck) => {
   return async (dispatch) => {
     setLoader(true)
     try {
       const notiToken = await AsyncStorage.getItem('onesignaltoken')
       let baseUrl = `${base_Url}login`
       let myData = new FormData()
-      
-      myData.append('email',data.email)
-      myData.append('password',data.password)
-      myData.append('device',device)
+
+      myData.append('email', data.email)
+      myData.append('password', data.password)
+      myData.append('device', device)
       myData.append('device_token', notiToken);
 
-      const response = await fetch(baseUrl,{
+      const response = await fetch(baseUrl, {
         method: 'POST',
         body: myData
       })
+      console.log('response', response)
       const responseData = await response.json()
 
-      if(responseData?.success?.status == 200){
+      if (responseData?.success?.status == 200) {
         console.log('Laraib D.')
         setLoader(false)
-        dispatch({type: USER_DETAILS, payload: responseData.success})
-        dispatch({type: ROLE_ID, payload: responseData.success.data.role_id})
+        dispatch({ type: USER_DETAILS, payload: responseData.success })
+        dispatch({ type: ROLE_ID, payload: responseData.success.data.role_id })
         await AsyncStorage.setItem('user_details', JSON.stringify(responseData.success))
-      }else{
+      } else {
         setLoader(false)
         console.log('else error')
         setCheck(true)
@@ -100,16 +101,16 @@ export const social_signin = (data, navigation) => {
       });
       const responseData = await response.json();
       console.log('responseData', responseData)
-      
+
       if (responseData?.success?.status === 200) {
         console.log('Laraib D.')
         const userDetail = JSON.stringify(responseData?.success);
-        dispatch({type: USER_DETAILS, payload: responseData?.success});
-        dispatch({type: ROLE_ID, payload: responseData.success.data.role_id})
+        dispatch({ type: USER_DETAILS, payload: responseData?.success });
+        dispatch({ type: ROLE_ID, payload: responseData.success.data.role_id })
         await AsyncStorage.setItem('user_details', userDetail);
       } else {
         const notification_token = await AsyncStorage.getItem('onesignaltoken');
-        await dispatch({type: SOCIAL_DATA, payload: data});
+        await dispatch({ type: SOCIAL_DATA, payload: data });
         navigation.navigate('accountype', {
           UserData: data,
           notification_token: notification_token,
@@ -123,37 +124,42 @@ export const social_signin = (data, navigation) => {
     }
   };
 };
-export const VerifyEmailBR =  (data,role_id,navigation,type,profileImage,coverImage,setLoader) => {
+export const VerifyEmailBR = (data, role_id, navigation, type, profileImage, coverImage, setLoader, setCheck) => {
   return async (dispatch) => {
+
     setLoader(true)
     try {
       let baseUrl = `${base_Url}verify-before-register`
       let myData = new FormData()
-  console.log('data', data)
-      myData.append('email',data.email)
-      myData.append('name',data.fname ? data.fname : data.c_name)
-  
-      const response = await fetch(baseUrl,{
+      console.log('data', data)
+      myData.append('email', data.email)
+      myData.append('name', data.fname ? data.fname : data.c_name)
+
+      const response = await fetch(baseUrl, {
         method: 'post',
         body: myData
       })
-  
+
       const responseData = await response.json()
       console.log('responseData', responseData)
-  
-      if(responseData?.success?.status === 200){
+
+      if (responseData?.success?.status === 200) {
         setLoader(false)
-        dispatch({type: OTP, payload: responseData.success.OTP})
-        if(type == 'signup'){
-          navigation.navigate('otp',{
-            role_id:role_id,
-            data:data,
+
+        dispatch({ type: OTP, payload: responseData.success.OTP })
+        if (type == 'signup') {
+          navigation.navigate('otp', {
+            role_id: role_id,
+            data: data,
             type: type,
-            profile_image : profileImage,
-            cover_image  :coverImage
+            profile_image: profileImage,
+            cover_image: coverImage
           })
         }
-      }else{
+      } else if (responseData?.error?.email == 'The email has already been taken.') {
+        setLoader(false)
+        setCheck(true)
+      } else {
         setLoader(false)
       }
     } catch (error) {
@@ -162,41 +168,41 @@ export const VerifyEmailBR =  (data,role_id,navigation,type,profileImage,coverIm
     }
   }
 }
-export const Register = (data,role_id,device,profile_image,cover_image,setLoader,UserData) => {
+export const Register = (data, role_id, device, profile_image, cover_image, setLoader, UserData) => {
   return async (dispatch) => {
     setLoader(true)
     try {
       const notiToken = await AsyncStorage.getItem('onesignaltoken')
       let baseUrl = `${base_Url}register`
       let myData = new FormData()
-      
-      myData.append('role_id',role_id)
-      myData.append('name',data.fname ? data.fname : data.c_name)
-      myData.append('email',data.email)
-      myData.append('address',data.address)
-      myData.append('password',data.password)
-      myData.append('password_confirmation',data.confirm_password)
-      myData.append('device',device)
-      myData.append('device_token',notiToken)
-      {role_id === '2' && myData.append('business_name',data?.b_name)}
-      {role_id === '2' && myData.append('profile_image',profile_image)}
-      {role_id === '2' && myData.append('cover_image',cover_image)}
-      {UserData != null && myData.append('social_id',UserData.uID)}
 
-    
-      const response = await fetch(baseUrl,{
+      myData.append('role_id', role_id)
+      myData.append('name', data.fname ? data.fname : data.c_name)
+      myData.append('email', data.email)
+      myData.append('address', data.address)
+      myData.append('password', data.password)
+      myData.append('password_confirmation', data.confirm_password)
+      myData.append('device', device)
+      myData.append('device_token', notiToken)
+      { role_id === '2' && myData.append('business_name', data?.b_name) }
+      { role_id === '2' && myData.append('profile_image', profile_image) }
+      { role_id === '2' && myData.append('cover_image', cover_image) }
+      { UserData != null && myData.append('social_id', UserData.uID) }
+
+
+      const response = await fetch(baseUrl, {
         method: 'POST',
         body: myData
       })
       const responseData = await response.json()
       console.log('responseData', responseData)
-  
-      if(responseData?.success?.status == 200){
+
+      if (responseData?.success?.status == 200) {
         setLoader(false)
-        dispatch({type: USER_DETAILS, payload: responseData.success})
-        dispatch({type: ROLE_ID, payload: responseData.success.data.role_id})
+        dispatch({ type: USER_DETAILS, payload: responseData.success })
+        dispatch({ type: ROLE_ID, payload: responseData.success.data.role_id })
         await AsyncStorage.setItem('user_details', JSON.stringify(responseData.success))
-      }else{
+      } else {
         setLoader(false)
         console.log('else error')
       }
@@ -206,34 +212,34 @@ export const Register = (data,role_id,device,profile_image,cover_image,setLoader
     }
   }
 }
-export const VerifyEmailBP =  (data,navigation,type,setLoader,setCheck) => {
+export const VerifyEmailBP = (data, navigation, type, setLoader, setCheck) => {
   return async (dispatch) => {
     setLoader(true)
     try {
       let baseUrl = `${base_Url}verify`
       let myData = new FormData()
-  
-      myData.append('email',data.email)
-  
-      const response = await fetch(baseUrl,{
+
+      myData.append('email', data.email)
+
+      const response = await fetch(baseUrl, {
         method: 'post',
         body: myData
       })
-  
+
       const responseData = await response.json()
       console.log('responseData', responseData)
-  
-      if(responseData?.success?.status === 200){
-        dispatch({type: OTP, payload: responseData.success.Reset_code}) 
+
+      if (responseData?.success?.status === 200) {
+        dispatch({ type: OTP, payload: responseData.success.Reset_code })
         setLoader(false)
-        if(type == 'forgot'){
-          navigation.navigate('otp',{
-            data:data,
+        if (type == 'forgot') {
+          navigation.navigate('otp', {
+            data: data,
             type: type,
-            id:responseData.success.id
+            id: responseData.success.id
           })
         }
-      }else{
+      } else {
         setLoader(false)
         setCheck(true)
       }
@@ -243,72 +249,72 @@ export const VerifyEmailBP =  (data,navigation,type,setLoader,setCheck) => {
     }
   }
 }
-export const ResetPassword = async (data,navigation,id,setLoader,setCheck) => {
-    setLoader(true)
-    try {
-      let baseUrl = `${base_Url}resetpassword/${id}`
-      let myData = new FormData()
-  
-      myData.append('password',data.password)
-      myData.append('password_confirmation',data.confirm_Password)
-  
-      const response = await fetch(baseUrl,{
-        method: 'post',
-        body: myData
-      })
-  
-      const responseData = await response.json()
-      console.log('responseData', responseData)
-  
-      if(responseData?.success?.status === 200){
-        setLoader(false)
-        setCheck(true)
-        setTimeout(() => {
-          setCheck(false)
-          navigation.navigate('login')
-        }, 2000);
-      }else{
-        setLoader(false)
-        
-      }
-    } catch (error) {
-      console.log('VerifyEmailBP error', error)
+export const ResetPassword = async (data, navigation, id, setLoader, setCheck) => {
+  setLoader(true)
+  try {
+    let baseUrl = `${base_Url}resetpassword/${id}`
+    let myData = new FormData()
+
+    myData.append('password', data.password)
+    myData.append('password_confirmation', data.confirm_Password)
+
+    const response = await fetch(baseUrl, {
+      method: 'post',
+      body: myData
+    })
+
+    const responseData = await response.json()
+    console.log('responseData', responseData)
+
+    if (responseData?.success?.status === 200) {
       setLoader(false)
+      setCheck(true)
+      setTimeout(() => {
+        setCheck(false)
+        navigation.navigate('login')
+      }, 2000);
+    } else {
+      setLoader(false)
+
     }
+  } catch (error) {
+    console.log('VerifyEmailBP error', error)
+    setLoader(false)
+  }
 }
-export const ChnagePasrwd = async (data,navigation,userDetails,setLoader,setCheck,setCheck2) => {
-    setLoader(true)
-    try {
-      let baseUrl = `${base_Url}changed-password/${userDetails.data.id}`
-      let myData = new FormData()
-  
-      myData.append('password',data.confirm_Password)
-      myData.append('old_password',data.current_Password)
-  
-      const response = await fetch(baseUrl,{
-        method: 'post',
-        body: myData
-      })
-  
-      const responseData = await response.json()
-      console.log('responseData', responseData)
-      if(responseData?.error?.message == "Old password Incorrect"){
-        setCheck2(true)
-      }
-  
-      if(responseData?.success?.status === 200){
-        setLoader(false)
-        setCheck(true)
-        setTimeout(() => {
-          setCheck(false)
-          navigation.goBack()
-        }, 2000);
-      }else{
-        setLoader(false)
-        
-      }
-    } catch (error) {
-      console.log('VerifyEmailBP error', error)
-      setLoader(false)
+export const ChnagePasrwd = async (data, navigation, userDetails, setLoader, setCheck, setCheck2) => {
+  setLoader(true)
+  try {
+    let baseUrl = `${base_Url}changed-password/${userDetails.data.id}`
+    let myData = new FormData()
+
+    myData.append('password', data.confirm_Password)
+    myData.append('old_password', data.current_Password)
+
+    const response = await fetch(baseUrl, {
+      method: 'post',
+      body: myData
+    })
+
+    const responseData = await response.json()
+    console.log('responseData', responseData)
+    if (responseData?.error?.message == "Old password Incorrect") {
+      setCheck2(true)
     }
+
+    if (responseData?.success?.status === 200) {
+      setLoader(false)
+      setCheck(true)
+      setTimeout(() => {
+        setCheck(false)
+        navigation.goBack()
+      }, 2000);
+    } else {
+      setLoader(false)
+
+    }
+  } catch (error) {
+    console.log('VerifyEmailBP error', error)
+    setLoader(false)
+  }
 }
