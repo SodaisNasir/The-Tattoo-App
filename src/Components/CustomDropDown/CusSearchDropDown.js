@@ -1,14 +1,18 @@
-import { Animated, Easing, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, Easing, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { scale, verticalScale } from 'react-native-size-matters'
 import { Font } from '../../Assets/Fonts/Font'
 import { useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 
-const CusDropDown = (props) => {
-    const skintones = useSelector(state => state.skintones);
+const CusSearchDropDown = (props) => {
+    const navigation = useNavigation()
+    const allcreators = useSelector(state => state.allcreators)
+    const userData = useSelector(state => state.user_details)
+
     const [show, setShow] = useState(false);
     const [data, setData] = useState('');
-
+    console.log('data', data)
     // Define the animation value and its initial state
     const animatedHeight = useState(new Animated.Value(0))[0];
 
@@ -24,9 +28,12 @@ const CusDropDown = (props) => {
     };
 
     const handlePress = (code) => {
-        props.setType(code)
+        props.setType(code.name)
         setData(code);
         setShow(!show);
+        if (userData.data.role_id == 1) {
+            navigation.navigate('RandomProfile', { id: code.id })
+        }
         // Start the animation to show/hide the dropdown
         Animated.timing(animatedHeight, {
             toValue: show ? 0 : 1, // Target value depending on show/hide state
@@ -39,9 +46,8 @@ const CusDropDown = (props) => {
     // Calculate the animated height for the dropdown
     const dropdownHeight = animatedHeight.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, skintones.length * verticalScale(30)],
+        outputRange: [0, verticalScale(5) * verticalScale(30)],
     });
-
     return (
         <>
             <TouchableOpacity onPress={() => handleClick()}>
@@ -51,16 +57,24 @@ const CusDropDown = (props) => {
                             data ?
                                 <View
                                     style={{
-                                        height: scale(20),
-                                        width: scale(20),
-                                        backgroundColor: data
-                                    }}
-                                />
+                                        height: verticalScale(30),
+                                        backgroundColor: 'white',
+                                        justifyContent: 'center'
+                                    }} >
+                                    <Text style={{
+                                        color: 'black',
+                                        fontFamily: Font.OpenSans400
+                                    }}>
+                                        {
+                                            data.name
+                                        }
+                                    </Text>
+                                </View>
                                 :
                                 <Text style={{
                                     color: 'black',
                                     fontFamily: Font.OpenSans400
-                                }}>Select tone</Text>
+                                }}>{userData.data.role_id == 1 ? 'Tag creator' : 'Tag user'}</Text>
                         }
 
                     </View>
@@ -70,27 +84,28 @@ const CusDropDown = (props) => {
 
             {/* Use Animated.View for the dropdown */}
 
-            <Animated.View style={{
-                flex: 1,
-                overflow: 'hidden',
-                borderBottomRightRadius: 12,
-                borderBottomLeftRadius: 12,
-                height: dropdownHeight,
-            }}>
-                <FlatList
-                    data={skintones}
-                    renderItem={({ item }) => {
-                        return (
-                            <TouchableOpacity
-                                onPress={() => handlePress(item.code)}
-                                key={item.id}
-                                style={{
-                                    height: verticalScale(30),
-                                    backgroundColor: item.code,
-                                }} />
-                        );
-                    }}
-                />
+            <Animated.View style={{ overflow: 'hidden', borderBottomRightRadius: 12, borderBottomLeftRadius: 12, height: dropdownHeight }}>
+                <ScrollView contentContainerStyle={{ overflow: 'hidden', borderBottomRightRadius: 12, borderBottomLeftRadius: 12, }} nestedScrollEnabled={true}>
+                    {allcreators?.map((item) => (
+                        <TouchableOpacity
+                            key={item.id}
+                            onPress={() => handlePress(item)}
+                            style={{
+                                height: verticalScale(30),
+                                backgroundColor: 'white',
+                                paddingLeft: scale(15),
+                                justifyContent: 'center'
+                            }}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={{
+                                color: 'black',
+                                fontSize: scale(13),
+                                fontFamily: Font.OpenSans400,
+                            }}>{item.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
             </Animated.View>
 
         </>
@@ -107,5 +122,4 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     }
 });
-
-export default CusDropDown;
+export default CusSearchDropDown

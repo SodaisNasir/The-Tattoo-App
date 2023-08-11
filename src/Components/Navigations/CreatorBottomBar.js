@@ -1,9 +1,9 @@
 import React from 'react'
-import {StyleSheet, Text, View, Image} from 'react-native'
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import {NavigationContainer} from '@react-navigation/native'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import {scale, verticalScale} from 'react-native-size-matters'
+import { StyleSheet, Text, View, Image } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { scale, verticalScale } from 'react-native-size-matters'
 import ChangePass from '../../Screens/Common/ChangePass'
 import Setting from '../../Screens/Common/Setting'
 import SettingOpt from '../../Screens/Common/SettingOpt'
@@ -46,25 +46,25 @@ const CreatorBottomNavigator = () => {
             tabBarLabel: () => {
               return null
             },
-            tabBarIcon: ({color}) => (
+            tabBarIcon: ({ color }) => (
               <View
-              style={{
-                height: scale(30), width: scale(30), overflow: 'hidden',
-              }}
+                style={{
+                  height: scale(30), width: scale(30), overflow: 'hidden',
+                }}
               >
 
-              <Image
-                style={{height: '100%',width: '100%'}}
-                source={require('../../Assets/Images/menu.png')}
+                <Image
+                  style={{ height: '100%', width: '100%' }}
+                  source={require('../../Assets/Images/menu.png')}
                 />
-                </View>
+              </View>
             ),
           }}
         />
 
         <Tab.Screen
-          name="AddTatto"
-          component={AddTatto}
+          name="AllAddTatto"
+          component={AllAddTatto}
           options={{
             tabBarStyle: {
               display: 'none',
@@ -73,9 +73,9 @@ const CreatorBottomNavigator = () => {
             tabBarLabel: () => {
               return null
             },
-            tabBarIcon: ({color}) => (
+            tabBarIcon: ({ color }) => (
               <Image
-                style={{height: scale(30), width: scale(30), borderRadius: 100}}
+                style={{ height: scale(30), width: scale(30), borderRadius: 100 }}
                 source={require('../../Assets/Images/circle.png')}
               />
             ),
@@ -90,9 +90,9 @@ const CreatorBottomNavigator = () => {
             tabBarLabel: () => {
               return null
             },
-            tabBarIcon: ({color}) => (
+            tabBarIcon: ({ color }) => (
               <Image
-                style={{height: scale(30), width: scale(30), borderRadius: 100}}
+                style={{ height: scale(30), width: scale(30), borderRadius: 100 }}
                 source={require('../../Assets/Images/setting.png')}
               />
             ),
@@ -108,27 +108,27 @@ const Stack = createNativeStackNavigator()
 
 function AllHome() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='home'>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='home'>
       <Stack.Screen name="home" component={Home} />
       <Stack.Screen name="RandomProfile" component={RandomProfile} />
     </Stack.Navigator>
   )
 }
-// function AllAddTatto() {
-//   return (
-//     <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='home'>
-//       <Stack.Screen name="AddTatto" component={AddTatto} />
-//       <Stack.Screen name="RandomProfile" component={RandomProfile} />
-//     </Stack.Navigator>
-//   )
-// }
+function AllAddTatto() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='AddTatto'>
+      <Stack.Screen name="AddTatto" component={AddTatto} />
+      <Stack.Screen name="RandomProfile" component={RandomProfile} />
+    </Stack.Navigator>
+  )
+}
 
 function AllSetting() {
   return (
     <Stack.Navigator
-      screenOptions={{headerShown: false}}
+      screenOptions={{ headerShown: false }}
       initialRouteName="Setting">
-         <Stack.Screen name="RandomProfile" component={RandomProfile} />
+      <Stack.Screen name="RandomProfile" component={RandomProfile} />
       <Stack.Screen name="editprofile" component={EditProfile} />
       <Stack.Screen name="changepass" component={ChangePass} />
       <Stack.Screen name="Setting" component={Setting} />
